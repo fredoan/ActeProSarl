@@ -1843,6 +1843,15 @@ body{font-family:"Times New Roman",serif;color:#111}.document{max-width:820px;ma
   init();
 
 })();
+// Masque le préchargeur une fois l'application prête
+    window.addEventListener("load", () => {
+      const loader = document.getElementById("appLoader");
+      if (!loader) return;
+      setTimeout(() => {
+        loader.classList.add("hide");
+        setTimeout(() => loader.remove(), 500);
+      }, 700);
+    });
 </script>
 </body>
 </html>
