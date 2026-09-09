@@ -1,0 +1,1924 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ActePro Sarl — Statuts & Annexe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <!-- Firebase compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.1/firebase-firestore-compat.js"></script>
+  <style>
+    /* === DESIGN MONENTREPRISE.BJ === */
+    :root{--p:#167078;--pd:#10545a;--bg:#EFEFEF;--mut:#68727d;--radius:4px}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Roboto',Arial,sans-serif;background:var(--bg);color:#263238;min-height:100vh;display:flex;flex-direction:column}
+    button,input,select,textarea{font:inherit}button{cursor:pointer}
+    .hidden{display:none!important}
+
+    header{height:80px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:20}
+    .brand{display:flex;align-items:center;gap:10px;color:var(--p);font-size:20px;font-weight:700}
+    .mark{width:38px;height:38px;background:var(--p);color:#fff;border-radius:var(--radius);display:grid;place-items:center}
+    .nav{display:flex;gap:18px;font-size:14px}
+    .nav a{color:#263238;text-decoration:none}
+    .nav a:hover{color:var(--p)}
+
+    main{max-width:1200px;width:100%;margin:auto;padding:30px 20px;flex:1}
+
+    .progress{background:#fff;padding:18px 24px;margin-bottom:26px;box-shadow:0 2px 8px rgba(0,0,0,0.04);border-radius:var(--radius)}
+    .progress svg{width:100%;height:68px}
+    .dot{fill:#fff;stroke:#99a6b6;stroke-width:2}
+    .dot.active,.dot.done{fill:var(--p);stroke:var(--p)}
+    .st{fill:#68727d;font-size:11px;text-anchor:middle}
+    .st.active{fill:var(--p);font-weight:700}
+    .line{stroke:#99a6b6;stroke-width:2;opacity:.35}
+    .line2{stroke:var(--p);stroke-width:2}
+
+    .card{background:#fff;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:22px;border-radius:var(--radius);overflow:hidden}
+    .head{padding:17px 23px;background:#fafafa;border-bottom:2px solid var(--p);color:var(--p)}
+    .head h2{font-size:18px;font-weight:500}
+    .body{padding:24px}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:17px}
+    .fg{display:flex;flex-direction:column;gap:5px}
+    .fg label{font-size:14px;font-weight:500}
+    .req{color:#c0392b}
+    .fg input,.fg select,.fg textarea{padding:10px 12px;border:1.5px solid #d7d3c6;border-radius:var(--radius);background:#fff;transition:0.2s}
+    .fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--p);box-shadow:0 0 0 3px rgba(22,112,120,0.15)}
+    .fg textarea{min-height:120px;resize:vertical}
+    .bad{border-color:#dc3545!important;box-shadow:0 0 0 3px rgba(220,53,69,0.2)!important}
+    .hint{font-size:12px;color:var(--mut)}
+
+    .ac{position:relative}
+    .suggest{position:absolute;z-index:30;left:0;right:0;top:100%;background:#fff;border:1px solid #ddd;box-shadow:0 5px 15px rgba(0,0,0,0.12);max-height:220px;overflow:auto;display:none}
+    .suggest.show{display:block}
+    .suggest div{padding:9px 12px;cursor:pointer}
+    .suggest div:hover{background:#eef5f8;color:var(--p)}
+
+    .buttons{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .btn{border:0;border-radius:var(--radius);padding:10px 22px;font-weight:600;transition:0.2s}
+    .btn:disabled{opacity:0.45;cursor:not-allowed}
+    .primary{background:var(--p);color:#fff}
+    .primary:hover:not(:disabled){background:var(--pd)}
+    .secondary{background:#e0e0e0;color:#263238}
+    .secondary:hover:not(:disabled){background:#d0d0d0}
+    .success{background:#28a745;color:#fff}
+    .success:hover:not(:disabled){background:#218838}
+    .danger{background:#dc3545;color:#fff}
+    .danger:hover:not(:disabled){background:#c82333}
+
+    .sub{border:1px solid #e5e0d5;padding:15px;margin-bottom:12px;background:#fff;border-radius:var(--radius)}
+    .summary{background:#f8f9fa;padding:13px;margin-top:12px;border-radius:var(--radius)}
+    .summary strong{color:var(--p)}
+
+    .toastbox{position:fixed;right:24px;bottom:24px;z-index:99;width:min(390px,calc(100vw - 30px))}
+    .toast{background:#fff;border-left:4px solid var(--p);box-shadow:0 4px 16px rgba(0,0,0,0.12);padding:13px 16px;margin-top:9px;opacity:0;transform:translateY(15px);transition:.25s;border-radius:var(--radius)}
+    .toast.show{opacity:1;transform:none}
+    .toast.error{border-color:#dc3545}
+    .toast.success{border-color:#28a745}
+
+    .preview{margin-top:28px;padding-top:28px;border-top:2px solid #e5e0d5}
+    .tabs{display:flex;gap:8px;margin-bottom:15px}
+    .tabs button{border:0;padding:10px 18px;background:#eee;border-radius:var(--radius) var(--radius) 0 0;font-weight:500}
+    .tabs .active{background:#fff;color:var(--p);border-bottom:3px solid var(--p)}
+    .paperwrap{background:#ddd;padding:18px;max-height:820px;overflow:auto;border-radius:var(--radius)}
+
+    .document{font-family:"Times New Roman",serif;font-size:12pt;line-height:1.45;text-align:justify;color:#111;background:#fff;max-width:820px;min-height:1120px;margin:auto;padding:18mm;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+    .document p{margin:0 0 7pt}
+    .right{text-align:right}
+    .center{text-align:center}
+    .bold{font-weight:700}
+    .u{text-decoration:underline}
+    .article{font-weight:700;text-decoration:underline;margin:13pt 0 6pt}
+    .title{font-weight:700;text-decoration:underline;text-align:center;font-size:14pt;margin:14pt 0}
+    .document table{width:100%;border-collapse:collapse;margin:14pt auto}
+    .document th,.document td{border:1px solid #000;padding:6pt 7pt;vertical-align:top}
+    .document th{text-align:center;font-weight:700}
+    .sig{width:86%}
+    .sig td{height:48pt}
+    .page{text-align:right;margin-top:24pt}
+    .email-blue{color:#0563C1;}
+
+    footer{background:#1e2b3c;color:rgba(255,255,255,0.7);text-align:center;padding:20px;font-size:14px;margin-top:40px}
+    footer a{color:#65b7bd;text-decoration:none}
+
+    @media(max-width:700px){
+      header{height:auto;padding:12px 16px;gap:10px;flex-wrap:wrap}
+      .nav{font-size:12px;gap:10px}
+      main{padding:18px 12px}
+      .grid{grid-template-columns:1fr}
+      .buttons{flex-direction:column}
+      .btn{width:100%}
+      .paperwrap{padding:7px}
+      .document{padding:10mm 8mm;min-height:0;font-size:10.5pt}
+      .document th,.document td{font-size:9pt;padding:4pt}
+    }
+    @media print{
+      body{background:#fff}
+      .no-print{display:none!important}
+      .paperwrap{background:#fff;padding:0;max-height:none;overflow:visible}
+      .document{box-shadow:none;max-width:none;padding:0;min-height:auto}
+      @page{size:A4;margin:15mm 17mm}
+    }
+
+    /* === ACTEPRO SARL PRO : esthétique, animations et alertes === */
+    :root{--p:#167078;--pd:#10545a;--bg:#eef1f3;--mut:#68727d;--ok:#258b43;--warn:#b7791f;--err:#c62828;--soft:#f7f9fa;--border:#dce3e7;--radius:6px}
+    body{background:linear-gradient(180deg,#f5f7f8 0,#eef1f3 100%)}
+    header{height:76px;border-bottom:1px solid #e3e8eb;box-shadow:0 3px 14px rgba(25,45,55,.07)}
+    .brand{letter-spacing:.1px}.mark{box-shadow:0 5px 14px rgba(22,112,120,.2)}
+    main{max-width:1180px;padding:26px 20px 34px}
+    .progress{position:relative;padding:20px 24px 16px;border:1px solid #e4e9ec;box-shadow:0 4px 16px rgba(25,45,55,.055);overflow:hidden}
+    .progress-line{position:absolute;left:9%;right:9%;top:40px;height:3px;background:#dbe2e6;border-radius:10px;z-index:0}.progress-line span{display:block;width:0;height:100%;background:var(--p);border-radius:10px;transition:width .45s ease}
+    .progress-steps-ui{display:grid;grid-template-columns:repeat(6,1fr);position:relative;z-index:1;gap:6px}.stepdot{display:flex;flex-direction:column;align-items:center;gap:8px;color:#7b8790;font-size:12px;font-weight:500;transition:.25s}.stepdot b{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#fff;border:2px solid #b9c4ca;color:#7b8790;box-shadow:0 2px 6px rgba(0,0,0,.04);transition:.3s}.stepdot.active,.stepdot.done{color:var(--p);font-weight:700}.stepdot.active b,.stepdot.done b{background:var(--p);border-color:var(--p);color:#fff;box-shadow:0 6px 16px rgba(22,112,120,.2)}.stepdot.active b{animation:stepPulse 1.8s infinite}
+    .card{border:1px solid #e4e9ec;box-shadow:0 5px 20px rgba(25,45,55,.06);animation:cardIn .35s ease both}.head{background:#fff;border-bottom:2px solid var(--p);padding:16px 22px}.head h2{font-size:17px}.body{padding:24px}
+    .fg input,.fg select,.fg textarea{border:1px solid #cfd8dd;border-radius:5px;min-height:42px}.fg input:hover,.fg select:hover,.fg textarea:hover{border-color:#aebbc2}.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(22,112,120,.12)}
+    .btn{border-radius:5px;box-shadow:0 2px 7px rgba(0,0,0,.07);transition:transform .18s,box-shadow .18s,background .18s}.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 5px 13px rgba(0,0,0,.1)}
+    .sub{border:1px solid #e1e7ea;box-shadow:0 2px 8px rgba(0,0,0,.025);animation:cardIn .3s ease both}.summary,.recap-box{background:#f7f9fa;border:1px solid #e1e7ea;padding:16px;border-radius:6px}.recap-box{margin-top:16px}.recap-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.recap-item{background:#fff;border:1px solid #e5eaed;padding:11px 12px;border-radius:5px}.recap-item small{display:block;color:#7a858d;margin-bottom:3px}.recap-item strong{color:#263238}
+    .alert{display:flex;gap:12px;align-items:flex-start;padding:13px 15px;border-radius:5px;border-left:4px solid;margin-bottom:16px;line-height:1.45}.alert i{margin-top:2px}.alert.info{background:#eef7f8;border-color:var(--p);color:#29464a}.alert.warning{background:#fff8e8;border-color:var(--warn);color:#654a17}.alert.danger{background:#fff0f0;border-color:var(--err);color:#672222}.alert.success{background:#eef9f1;border-color:var(--ok);color:#245b32}
+    .validation-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.check{display:flex;gap:9px;align-items:flex-start;padding:11px 12px;border:1px solid #e0e7ea;border-radius:5px;background:#fff}.check.ok{border-left:4px solid var(--ok)}.check.bad{border-left:4px solid var(--err)}.check.warn{border-left:4px solid var(--warn)}.check i{margin-top:2px}.check.ok i{color:var(--ok)}.check.bad i{color:var(--err)}.check.warn i{color:var(--warn)}
+    .final-status{margin:14px 0}.final-status .alert{margin-bottom:0}.btn-generate{padding:12px 28px}
+    .app-loader{position:fixed;inset:0;background:linear-gradient(135deg,#f8fafb,#eef1f3);display:grid;place-items:center;z-index:9999;opacity:1;visibility:visible;transition:opacity .45s,visibility .45s}.app-loader.hide{opacity:0;visibility:hidden;pointer-events:none}.loader-box{text-align:center}.loader-mark{width:64px;height:64px;margin:0 auto 13px;border-radius:12px;background:var(--p);color:#fff;display:grid;place-items:center;font-size:27px;box-shadow:0 10px 28px rgba(22,112,120,.24);animation:loaderFloat 1.5s ease-in-out infinite}.loader-title{font-size:23px;font-weight:700;color:#263238}.loader-sub{font-size:13px;color:#71808a;margin-top:5px}.loader-track{width:220px;height:4px;background:#dce4e7;border-radius:10px;margin:18px auto 0;overflow:hidden}.loader-track span{display:block;height:100%;width:35%;background:var(--p);border-radius:10px;animation:loaderBar 1.1s ease-in-out infinite}
+    .toast{border-left-width:4px;border-radius:6px}.toast.error{border-color:var(--err)}.toast.success{border-color:var(--ok)}
+    @keyframes loaderFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}@keyframes loaderBar{0%{transform:translateX(-120%)}100%{transform:translateX(380%)}}@keyframes stepPulse{0%,100%{box-shadow:0 6px 16px rgba(22,112,120,.2)}50%{box-shadow:0 6px 22px rgba(22,112,120,.42)}}@keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    @media(max-width:700px){.progress{overflow-x:auto}.progress-steps-ui{min-width:650px}.progress-line{min-width:590px}.validation-summary,.recap-grid{grid-template-columns:1fr}.body{padding:18px}.head{padding:15px 18px}}
+
+    /* ===== Styles pour login et dashboard ===== */
+    .login-wrapper{background:#fff;max-width:400px;margin:40px auto;padding:30px;border-radius:8px;box-shadow:0 5px 20px rgba(0,0,0,.1)}
+    .login-wrapper h2{color:var(--p);margin-bottom:10px}
+    .login-wrapper input{width:100%;margin-bottom:15px;padding:12px;border:1px solid #cfd8dd;border-radius:5px}
+    .login-wrapper button{width:100%;padding:12px;background:var(--p);color:#fff;border:none;border-radius:5px;font-weight:600}
+    .login-status{margin-top:10px;text-align:center;font-size:14px}
+    .dashboard-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .dashboard-header h1{font-size:24px;color:#263238}
+    .btn-new{background:var(--p);color:#fff;padding:10px 20px;border:none;border-radius:5px;font-weight:600}
+    .btn-new:hover{background:var(--pd)}
+    .dashboard-table{width:100%;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+    .dashboard-table table{width:100%;border-collapse:collapse}
+    .dashboard-table th,.dashboard-table td{padding:12px 15px;text-align:left;border-bottom:1px solid #eee}
+    .dashboard-table th{background:#f5f7f8;font-weight:600;color:var(--p)}
+    .dashboard-table tr:hover{background:#fafbfc}
+    .btn-sm{padding:6px 12px;border:none;border-radius:4px;cursor:pointer;font-size:13px}
+    .btn-open{background:var(--p);color:#fff}
+    .btn-delete{background:#dc3545;color:#fff}
+    .dashboard-empty{text-align:center;padding:30px;color:#7b8790}
+  </style>
+</head>
+<body>
+<div id="appLoader" class="app-loader" aria-label="Chargement d’ActePro SARL">
+  <div class="loader-box">
+    <div class="loader-mark"><i class="fa-solid fa-building-columns"></i></div>
+    <div class="loader-title">ActePro SARL</div>
+    <div class="loader-sub">Préparation de votre espace de rédaction…</div>
+    <div class="loader-track"><span></span></div>
+  </div>
+</div>
+
+<div class="toastbox" id="toastbox"></div>
+
+<!-- ÉCRAN DE CONNEXION -->
+<div id="loginScreen" class="login-wrapper hidden">
+  <h2>Connexion à ActePro SARL</h2>
+  <p style="margin-bottom:20px;color:#68727d">Accès réservé aux utilisateurs autorisés</p>
+  <input type="email" id="loginEmail" placeholder="Email" autocomplete="username">
+  <input type="password" id="loginPassword" placeholder="Mot de passe" autocomplete="current-password">
+  <div id="loginError" style="color:#dc3545;font-size:14px;margin-bottom:10px"></div>
+  <div id="loginStatus" class="login-status">🔐 Connexion sécurisée Firebase</div>
+  <button id="btnLogin">Se connecter</button>
+</div>
+
+<!-- ÉCRAN DASHBOARD -->
+<div id="dashboardScreen" class="hidden" style="max-width:1200px;margin:0 auto;padding:30px 20px">
+  <div class="dashboard-header">
+    <h1>📁 Mes dossiers SARL</h1>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span id="userEmail" style="color:#68727d;font-size:14px"></span>
+      <button class="btn btn-delete btn-sm" id="btnLogout">Déconnexion</button>
+    </div>
+  </div>
+  <button class="btn-new" id="btnNewDossier"><i class="fa-solid fa-plus"></i> Nouveau dossier</button>
+  <div id="dossiersList" class="dashboard-table" style="margin-top:20px"></div>
+</div>
+
+<!-- ÉCRAN WIZARD (principal) -->
+<header id="mainHeader" class="hidden">
+  <div class="brand">
+    <div class="mark">A</div>
+    ActePro Sarl
+  </div>
+  <nav class="nav">
+    <a href="#" id="backToDashboard"><i class="fa-solid fa-arrow-left"></i> Tableau de bord</a>
+    <span id="wizardReference" style="color:#68727d;font-size:13px"></span>
+  </nav>
+</header>
+
+<main id="mainContent" class="hidden">
+  <!-- Barre de progression -->
+  <div class="progress">
+    <div class="progress-line"><span id="pline2"></span></div>
+    <div class="progress-steps-ui">
+      <div class="stepdot active" data-step="0"><b>1</b><span>Guide</span></div>
+      <div class="stepdot" data-step="1"><b>2</b><span>Entreprise</span></div>
+      <div class="stepdot" data-step="2"><b>3</b><span>Gérant</span></div>
+      <div class="stepdot" data-step="3"><b>4</b><span>Parts</span></div>
+      <div class="stepdot" data-step="4"><b>5</b><span>Vérification</span></div>
+      <div class="stepdot" data-step="5"><b>6</b><span>Finaliser</span></div>
+    </div>
+  </div>
+
+  <!-- ÉTAPES -->
+  <div id="steps">
+    <section class="step" data-step="0">
+      <div class="card">
+        <div class="head"><h2><i class="fa-solid fa-compass"></i> Guide – Informations préliminaires</h2></div>
+        <div class="body">
+          <div class="grid">
+            <div class="fg"><label>Forme juridique <span class="req">*</span></label><select id="forme" required><option value="">Sélectionner</option><option>SARL unipersonnelle</option><option>SARL pluripersonnelle</option></select></div>
+            <div class="fg"><label>Type de statuts <span class="req">*</span></label><select id="type" required><option value="">Sélectionner</option><option>Statuts notariés</option><option>Statuts APIEX</option></select></div>
+            <div class="fg"><label>Commune de l'activité <span class="req">*</span></label><div class="ac"><input id="commune" required autocomplete="off" placeholder="Rechercher ou saisir"><div id="communeList" class="suggest"></div></div></div>
+            <div class="fg"><label>Durée (années) <span class="req">*</span></label><input id="duree" type="number" min="1" max="99" value="99" required></div>
+          </div>
+          <div id="formeAlert" class="alert info" style="margin-top:18px;margin-bottom:0"><i class="fa-solid fa-circle-info"></i><div><strong>Choix de la forme</strong><br>Le parcours est dédié aux SARL. Le nombre d’associés déterminera automatiquement la rédaction adaptée.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step hidden" data-step="1">
+      <div class="card">
+        <div class="head"><h2><i class="fa-solid fa-building"></i> Informations sur l'entreprise</h2></div>
+        <div class="body">
+          <div class="grid">
+            <div class="fg"><label>Dénomination <span class="req">*</span></label><input id="denom" placeholder="Ex: GAFER SARL" required></div>
+            <div class="fg"><label>Capital social (FCFA) <span class="req">*</span></label><input id="capital" type="number" min="1000" step="1000" required></div>
+            <div class="fg"><label>Nombre total de parts <span class="req">*</span></label><input id="nbparts" type="number" min="1" step="1" required></div>
+            <div class="fg"><label>Valeur unitaire de la part (FCFA) <span class="req">*</span></label><input id="valpart" type="number" min="1000" step="1000" required></div>
+          </div>
+          <hr style="margin:20px 0;border:0;border-top:1px solid #e5e0d5">
+          <h4 style="margin-bottom:12px">Adresse du siège social</h4>
+          <div class="grid">
+            <div class="fg"><label>Quartier <span class="req">*</span></label><input id="quartier" required></div>
+            <div class="fg"><label>Parcelle</label><input id="parcelle"></div>
+            <div class="fg"><label>Numéro TF <span class="req">*</span></label><input id="tf" required></div>
+            <div class="fg"><label>Nom du propriétaire du local</label><input id="proprietaire"></div>
+            <div class="fg"><label>Téléphone <span class="req">*</span></label><input id="tel" type="tel" required></div>
+            <div class="fg"><label>Email <span class="req">*</span></label><input id="email" type="email" required></div>
+          </div>
+          <div class="fg" style="margin-top:14px"><label>Objet social (une activité par ligne) <span class="req">*</span></label><div class="ac"><textarea id="objet" required style="min-height:120px;"></textarea></div><span class="hint">Saisissez librement ou utilisez l'auto‑complétion (plus de 1200 activités disponibles).</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step hidden" data-step="2">
+      <div class="card">
+        <div class="head"><h2><i class="fa-solid fa-user-tie"></i> Identité du gérant / associé</h2></div>
+        <div class="body">
+          <div class="grid">
+            <div class="fg"><label>Civilité <span class="req">*</span></label><select id="civilite" required><option value="">Sélectionner</option><option>Monsieur</option><option>Madame</option></select></div>
+            <div class="fg"><label>Prénom(s) <span class="req">*</span></label><input id="prenom" required></div>
+            <div class="fg"><label>Nom <span class="req">*</span></label><input id="nom" required></div>
+            <div class="fg"><label>Profession <span class="req">*</span></label><div class="ac"><input id="profession" required autocomplete="off" placeholder="Rechercher ou saisir"><div id="professionList" class="suggest"></div></div></div>
+            <div class="fg"><label>Lieu de naissance <span class="req">*</span></label><input id="lieu" required></div>
+            <div class="fg"><label>Date de naissance <span class="req">*</span></label><input id="naissance" type="date" required></div>
+            <div class="fg"><label>Nationalité <span class="req">*</span></label><div class="ac"><input id="nationalite" required autocomplete="off" placeholder="Rechercher ou saisir"><div id="nationaliteList" class="suggest"></div></div></div>
+            <div class="fg"><label>NPI <span class="req">*</span></label><input id="npi" inputmode="numeric" maxlength="14" required><span class="hint">14 chiffres maximum.</span></div>
+            <div class="fg"><label>Type de pièce <span class="req">*</span></label><select id="piece" required><option value="">Sélectionner</option><option>CIP</option><option>CNI</option><option>Passeport</option></select></div>
+            <div class="fg"><label>Numéro de pièce <span class="req">*</span></label><input id="pieceNo" inputmode="numeric" maxlength="14" required></div>
+            <div class="fg"><label>Date d'expiration <span class="req">*</span></label><input id="expiration" type="date" required></div>
+            <div class="fg"><label>Domicile <span class="req">*</span></label><input id="domicile" required></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step hidden" data-step="3">
+      <div class="card">
+        <div class="head"><h2><i class="fa-solid fa-chart-pie"></i> Répartition des parts sociales</h2></div>
+        <div class="body">
+          <p class="hint" style="margin-bottom:14px">Ajoutez ou supprimez les souscripteurs. Les totaux sont calculés automatiquement.</p>
+          <div id="subs"></div>
+          <button class="btn secondary" id="add" type="button"><i class="fa-regular fa-plus"></i> Ajouter un souscripteur</button>
+          <div class="summary"><strong>Total des parts :</strong> <span id="tp">0</span> — <strong>Total des versements :</strong> <span id="tm">0</span> FCFA</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step hidden" data-step="4">
+      <div class="card">
+        <div class="head"><h2><i class="fa-solid fa-shield-halved"></i> Vérification du dossier</h2></div>
+        <div class="body">
+          <div class="alert info"><i class="fa-solid fa-circle-info"></i><div><strong>Contrôle automatique</strong><br>Vérifiez les identités, le capital, les parts et les versements avant de finaliser.</div></div>
+          <div id="validationSummary" class="validation-summary"></div>
+          <div id="recapContainer" class="recap-box"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="step hidden" data-step="5">
+      <div class="card">
+        <div class="head"><h2><i class="fa-solid fa-circle-check"></i> Finaliser et générer</h2></div>
+        <div class="body">
+          <div class="alert info"><i class="fa-solid fa-file-signature"></i><div>Le notaire est fixe : <strong>Maître Fadhil Firmin Gbadebo Éric ADAMON</strong>.</div></div>
+          <div class="fg final-date"><label>Date de l'acte <span class="req">*</span></label><input id="dateActe" type="date" required></div>
+          <div id="finalStatus" class="final-status"></div>
+          <div class="buttons" style="justify-content:center"><button class="btn success btn-generate" id="generate"><i class="fa-regular fa-file-lines"></i> Générer les documents</button></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="buttons no-print">
+    <button class="btn secondary" id="prev" disabled><i class="fa-regular fa-arrow-left"></i> Précédent</button>
+    <button class="btn primary" id="next">Suivant <i class="fa-regular fa-arrow-right"></i></button>
+  </div>
+
+  <section id="preview" class="preview hidden">
+    <div class="tabs"><button class="active" data-tab="statuts">Statuts</button><button data-tab="annexe">Annexe</button></div>
+    <div class="paperwrap" id="paper"></div>
+    <div class="buttons no-print" style="justify-content:center">
+      <button class="btn primary" id="word"><i class="fa-regular fa-file-word"></i> Word</button>
+      <button class="btn primary" id="pdf"><i class="fa-regular fa-file-pdf"></i> PDF</button>
+      <button class="btn primary" id="html"><i class="fa-regular fa-file-code"></i> HTML</button>
+    </div>
+  </section>
+</main>
+
+<footer id="mainFooter" class="hidden">
+  Développé par <strong>Amoussou Frédy ANAHAHOUNDE</strong> — Août 2026 — <a href="https://wa.me/2290152552106" target="_blank">WhatsApp</a>
+</footer>
+
+<script>
+'use strict';
+
+// ===================== FIREBASE =====================
+const firebaseConfig = {
+  apiKey: "AIzaSyC4vOTOGwOdmhsyRF1kIEBYPNVzgax9G8A",
+  authDomain: "actepro-immo.firebaseapp.com",
+  projectId: "actepro-immo",
+  storageBucket: "actepro-immo.firebasestorage.app",
+  messagingSenderId: "451534021985",
+  appId: "1:451534021985:web:4825da7b313416144e5120"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const secondaryApp = firebase.initializeApp(firebaseConfig, "secondary");
+const secondaryAuth = secondaryApp.auth();
+
+// ===================== VARIABLES GLOBALES =====================
+let currentUser = null;
+let currentProfile = {};
+let currentDossierId = null;
+let currentReference = '';
+let step = 0;
+const totalSteps = 6;
+let docs = {};
+let currentTab = 'statuts';
+
+// ===================== ÉLÉMENTS DOM =====================
+const $ = id => document.getElementById(id);
+const loginScreen = $('loginScreen');
+const dashboardScreen = $('dashboardScreen');
+const mainHeader = $('mainHeader');
+const mainContent = $('mainContent');
+const mainFooter = $('mainFooter');
+const toastbox = $('toastbox');
+
+// ===================== TOAST =====================
+function toast(msg, type = 'info') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  toastbox.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 350); }, 3500);
+}
+
+// ===================== AUTHENTIFICATION =====================
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(() => {});
+db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+
+function showScreen(screen) {
+  loginScreen.classList.toggle('hidden', screen !== 'login');
+  dashboardScreen.classList.toggle('hidden', screen !== 'dashboard');
+  const isWizard = screen === 'wizard';
+  mainHeader.classList.toggle('hidden', !isWizard);
+  mainContent.classList.toggle('hidden', !isWizard);
+  mainFooter.classList.toggle('hidden', !isWizard);
+}
+
+$('btnLogin').addEventListener('click', async () => {
+  const email = $('loginEmail').value.trim();
+  const pwd = $('loginPassword').value;
+  $('loginError').textContent = '';
+  if (!email || !pwd) { $('loginError').textContent = 'Email et mot de passe requis.'; return; }
+  try {
+    await auth.signInWithEmailAndPassword(email, pwd);
+    toast('Connexion réussie', 'success');
+  } catch (e) {
+    let msg = 'Erreur de connexion.';
+    if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') msg = 'Email ou mot de passe incorrect.';
+    else if (e.code === 'auth/too-many-requests') msg = 'Trop de tentatives, réessayez plus tard.';
+    else if (e.code === 'auth/network-request-failed') msg = 'Problème de connexion internet.';
+    $('loginError').textContent = msg;
+    toast(msg, 'error');
+  }
+});
+
+$('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') $('btnLogin').click(); });
+
+$('btnLogout').addEventListener('click', async () => {
+  try {
+    await logAction('LOGOUT', currentDossierId, {});
+    await auth.signOut();
+    currentUser = null;
+    currentProfile = {};
+    showScreen('login');
+    toast('Déconnecté', 'success');
+  } catch (e) { toast('Erreur de déconnexion', 'error'); }
+});
+
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    currentUser = user;
+    try {
+      const snap = await db.collection('users').doc(user.uid).get();
+      if (snap.exists) {
+        currentProfile = snap.data();
+        const role = String(currentProfile.role || '').toLowerCase();
+        const active = currentProfile.actif !== false;
+        if (active && ['admin', 'notaire', 'clerc'].includes(role)) {
+          showScreen('dashboard');
+          loadDossiers();
+        } else {
+          await auth.signOut();
+          toast('Compte non autorisé ou désactivé.', 'error');
+          showScreen('login');
+        }
+      } else {
+        await auth.signOut();
+        toast('Profil utilisateur introuvable.', 'error');
+        showScreen('login');
+      }
+    } catch (e) {
+      toast('Erreur de chargement du profil.', 'error');
+      showScreen('login');
+    }
+  } else {
+    currentUser = null;
+    showScreen('login');
+  }
+});
+
+function getProfileRole(profile) { return String(profile.role || '').toLowerCase(); }
+function isAdmin() { return getProfileRole(currentProfile) === 'admin'; }
+
+async function logAction(action, dossierId, details) {
+  try {
+    await db.collection('activityLogs').add({
+      action: action,
+      dossierId: dossierId || null,
+      details: details || {},
+      application: 'sarl',
+      userUid: currentUser ? currentUser.uid : 'inconnu',
+      userEmail: currentUser ? currentUser.email : 'inconnu',
+      userRole: getProfileRole(currentProfile),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      userAgent: navigator.userAgent
+    });
+  } catch (e) { console.warn('Journal non enregistré:', e); }
+}
+
+async function genererReferenceDossier() {
+  const annee = new Date().getFullYear();
+  const compteurRef = db.collection('compteurs_sarl').doc('dossiers');
+  try {
+    return await db.runTransaction(async transaction => {
+      const doc = await transaction.get(compteurRef);
+      let sequence = 1;
+      if (doc.exists) {
+        const data = doc.data();
+        sequence = (data.annee === annee) ? (data.sequence || 0) + 1 : 1;
+      }
+      transaction.set(compteurRef, { annee, sequence, derniereModification: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+      return `SARL-${annee}-${String(sequence).padStart(5, '0')}`;
+    });
+  } catch (e) {
+    console.error('Erreur référence:', e);
+    return `SARL-${new Date().getFullYear()}-${String(Date.now() % 100000).padStart(5, '0')}`;
+  }
+}
+
+// ===================== DASHBOARD =====================
+let dossiersUnsubscribe = null;
+
+function loadDossiers() {
+  if (!currentUser) return;
+  if (dossiersUnsubscribe) dossiersUnsubscribe();
+  const query = isAdmin() ? db.collection('dossiers_sarl') : db.collection('dossiers_sarl').where('creePar', '==', currentUser.uid);
+  dossiersUnsubscribe = query.onSnapshot(snap => {
+    const list = $('dossiersList');
+    const docs = snap.docs.slice().sort((a, b) => {
+      const ta = a.data().dateModification?.toMillis?.() || a.data().dateCreation?.toMillis?.() || 0;
+      const tb = b.data().dateModification?.toMillis?.() || b.data().dateCreation?.toMillis?.() || 0;
+      return tb - ta;
+    });
+    if (docs.length === 0) {
+      list.innerHTML = '<div class="dashboard-empty">📁 Aucun dossier SARL enregistré pour le moment.</div>';
+      return;
+    }
+    let html = '<table><thead><tr><th>Référence</th><th>Statut</th><th>Étape</th><th>Actions</th></tr></thead><tbody>';
+    docs.forEach(doc => {
+      const data = doc.data();
+      const ref = data.reference || 'SARL-' + doc.id.substring(0, 8).toUpperCase();
+      const statut = data.statut === 'termine' ? '✅ Terminé' : '📝 Brouillon';
+      html += `<tr>
+        <td><strong>${esc(ref)}</strong></td>
+        <td>${statut}</td>
+        <td>Étape ${data.etapeActuelle || 1}/${totalSteps}</td>
+        <td><button class="btn-sm btn-open" data-id="${doc.id}">📂 Ouvrir</button> <button class="btn-sm btn-delete" data-id="${doc.id}">🗑️</button></td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    list.innerHTML = html;
+  }, err => {
+    console.error(err);
+    toast('Lecture des dossiers impossible : ' + (err.code || 'erreur Firestore'), 'error');
+  });
+}
+
+$('btnNewDossier').addEventListener('click', async () => {
+  currentDossierId = null;
+  currentReference = '';
+  resetForm();
+  showScreen('wizard');
+  updateProgress();
+  try {
+    if (currentUser) {
+      const ref = await genererReferenceDossier();
+      currentReference = ref;
+      $('wizardReference').textContent = '· ' + ref;
+      const docRef = await db.collection('dossiers_sarl').add({
+        creePar: currentUser.uid,
+        reference: ref,
+        statut: 'brouillon',
+        etapeActuelle: 1,
+        donnees: collectData(),
+        dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
+        dateModification: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      currentDossierId = docRef.id;
+      await logAction('DOSSIER_CREATE', currentDossierId, { reference: ref });
+      toast(`Dossier ${ref} créé`, 'success');
+    }
+  } catch (e) { console.error('Erreur création dossier:', e); }
+});
+
+document.addEventListener('click', async e => {
+  const openBtn = e.target.closest('.btn-open');
+  const deleteBtn = e.target.closest('.btn-delete');
+  if (openBtn) {
+    const id = openBtn.dataset.id;
+    try {
+      const snap = await db.collection('dossiers_sarl').doc(id).get();
+      if (snap.exists) {
+        const data = snap.data();
+        currentDossierId = id;
+        currentReference = data.reference || '';
+        $('wizardReference').textContent = currentReference ? '· ' + currentReference : '';
+        step = Math.max(0, Math.min(totalSteps - 1, (data.etapeActuelle || 1) - 1));
+        populateForm(data.donnees || {});
+        showScreen('wizard');
+        updateProgress();
+        await logAction('DOSSIER_OPEN', id, { reference: currentReference });
+        toast('Dossier chargé', 'success');
+      }
+    } catch (err) { toast("Impossible d'ouvrir le dossier.", 'error'); }
+  }
+  if (deleteBtn) {
+    const id = deleteBtn.dataset.id;
+    if (confirm('Supprimer définitivement ce dossier SARL ?')) {
+      try {
+        await db.collection('dossiers_sarl').doc(id).delete();
+        await logAction('DOSSIER_DELETE', id, {});
+        toast('Dossier supprimé', 'success');
+      } catch (err) { toast('Suppression refusée.', 'error'); }
+    }
+  }
+});
+
+$('backToDashboard').addEventListener('click', () => {
+  showScreen('dashboard');
+  loadDossiers();
+});
+
+// ===================== FORMULAIRE / ÉTAPES =====================
+function resetForm() {
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    if (el.id && el.id !== 'dateActe') el.value = '';
+  });
+  $('dateActe').value = new Date().toISOString().slice(0, 10);
+  const subs = $('subs');
+  subs.innerHTML = '';
+  addSubscriber();
+  step = 0;
+  docs = {};
+  $('preview').classList.add('hidden');
+}
+
+function populateForm(d) {
+  const mapping = {
+    forme: d.forme, type: d.type, commune: d.commune, duree: d.duree,
+    denom: d.denom, capital: d.capital, nbparts: d.nbparts, valpart: d.valpart,
+    quartier: d.quartier, parcelle: d.parcelle, tf: d.tf, proprietaire: d.proprietaire,
+    tel: d.tel, email: d.email, objet: Array.isArray(d.objet) ? d.objet.join('\n') : d.objet,
+    civilite: d.civilite, prenom: d.prenom, nom: d.nom, profession: d.profession,
+    lieu: d.lieu, naissance: d.naissance, nationalite: d.nationalite, npi: d.npi,
+    piece: d.piece, pieceNo: d.pieceNo, expiration: d.expiration, domicile: d.domicile,
+    dateActe: d.dateActe
+  };
+  Object.keys(mapping).forEach(id => {
+    const el = $(id);
+    if (el) el.value = mapping[id] ?? '';
+  });
+  const subs = $('subs');
+  subs.innerHTML = '';
+  if (d.subs && d.subs.length) {
+    d.subs.forEach(s => {
+      addSubscriber();
+      const last = subs.lastElementChild;
+      if (last) {
+        last.querySelector('.name').value = s.name || '';
+        last.querySelector('.home').value = s.home || '';
+        last.querySelector('.parts').value = s.parts || '';
+        last.querySelector('.money').value = s.money || '';
+      }
+    });
+  } else {
+    addSubscriber();
+  }
+  updateTotals();
+  if (step >= 4) updateRecap();
+}
+
+function updateProgress() {
+  document.querySelectorAll('.step').forEach((s, i) => s.classList.toggle('hidden', i !== step));
+  document.querySelectorAll('.stepdot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === step);
+    dot.classList.toggle('done', i < step);
+  });
+  const line = $('pline2');
+  if (line) line.style.width = `${(step / (totalSteps - 1)) * 100}%`;
+  $('prev').disabled = (step === 0);
+  $('prev').style.opacity = step ? 1 : 0.45;
+  $('next').classList.toggle('hidden', step === totalSteps - 1);
+  if (step === 4) { updateRecap(); updateValidationSummary(); }
+  if (step === 5) updateFinalStatus();
+  if (currentDossierId && currentUser) {
+    saveDraft(true);
+  }
+}
+
+// ===================== VALIDATION =====================
+function validateStep(n) {
+  let ok = true, first = null;
+  const container = document.querySelector(`.step[data-step="${n}"]`);
+  if (!container) return false;
+  container.querySelectorAll('[required]').forEach(f => {
+    f.classList.remove('bad');
+    if (!String(f.value || '').trim()) {
+      f.classList.add('bad');
+      ok = false;
+      first = first || f;
+    }
+  });
+  if (n === 0) {
+    const d = parseInt($('duree').value);
+    if (isNaN(d) || d < 1 || d > 99) { ok = false; first = first || $('duree'); toast('Durée invalide.', 'error'); }
+  }
+  if (n === 2) {
+    const npi = $('npi').value.replace(/\D/g, '');
+    const pno = $('pieceNo').value.replace(/\D/g, '');
+    if (npi.length < 1 || npi.length > 14) { ok = false; first = first || $('npi'); toast('NPI invalide.', 'error'); }
+    if (pno.length < 1 || pno.length > 14) { ok = false; first = first || $('pieceNo'); toast('Numéro de pièce invalide.', 'error'); }
+  }
+  if (n === 3) {
+    const rows = document.querySelectorAll('.sub');
+    if (!rows.length) { toast('Ajoutez au moins un souscripteur.', 'error'); return false; }
+    let totalParts = 0, totalMoney = 0;
+    rows.forEach(r => {
+      r.querySelectorAll('[required]').forEach(f => {
+        f.classList.remove('bad');
+        if (!String(f.value || '').trim()) { f.classList.add('bad'); ok = false; first = first || f; }
+      });
+      totalParts += parseInt(r.querySelector('.parts')?.value || 0);
+      totalMoney += parseInt(r.querySelector('.money')?.value || 0);
+    });
+    const nbParts = parseInt($('nbparts').value) || 0;
+    const capital = parseInt($('capital').value) || 0;
+    const valPart = parseInt($('valpart').value) || 0;
+    if (capital !== nbParts * valPart) { ok = false; toast(`Capital ≠ parts × valeur.`, 'error'); }
+    if (totalMoney !== capital) { ok = false; toast(`Total versements ≠ capital.`, 'error'); }
+    if (totalParts !== nbParts) { ok = false; toast(`Total parts ≠ ${nbParts}.`, 'error'); }
+  }
+  if (!ok && first) {
+    first.focus();
+    first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+  return ok;
+}
+
+// ===================== NAVIGATION =====================
+$('next').addEventListener('click', () => {
+  if (validateStep(step)) {
+    step++;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+$('prev').addEventListener('click', () => {
+  if (step > 0) {
+    step--;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+
+// ===================== SOUSCRIPTEURS =====================
+function addSubscriber() {
+  const div = document.createElement('div');
+  div.className = 'sub';
+  div.innerHTML = `
+    <div class="grid">
+      <div class="fg"><label>Nom et prénom <span class="req">*</span></label><input class="name" required></div>
+      <div class="fg"><label>Domicile <span class="req">*</span></label><input class="home" required></div>
+      <div class="fg"><label>Nombre de parts <span class="req">*</span></label><input class="parts" type="number" min="1" required></div>
+      <div class="fg"><label>Montant versé (FCFA) <span class="req">*</span></label><input class="money" type="number" min="0" step="1000" required></div>
+    </div>
+    <button type="button" class="btn danger remove" style="margin-top:8px"><i class="fa-regular fa-trash"></i> Supprimer</button>
+  `;
+  div.querySelector('.remove').addEventListener('click', () => {
+    if (document.querySelectorAll('.sub').length === 1) { toast('Conservez au moins un associé.', 'warning'); return; }
+    div.remove();
+    updateTotals();
+    saveDraft(true);
+  });
+  div.querySelectorAll('input').forEach(inp => inp.addEventListener('input', () => { updateTotals(); saveDraft(true); }));
+  $('subs').appendChild(div);
+  updateTotals();
+}
+$('add').addEventListener('click', addSubscriber);
+
+function updateTotals() {
+  let p = 0, m = 0;
+  document.querySelectorAll('.sub').forEach(r => {
+    p += parseInt(r.querySelector('.parts')?.value || 0);
+    m += parseInt(r.querySelector('.money')?.value || 0);
+  });
+  $('tp').textContent = p.toLocaleString('fr-FR');
+  $('tm').textContent = m.toLocaleString('fr-FR');
+  if (step === 4) updateValidationSummary();
+  if (step === 5) updateFinalStatus();
+}
+
+// ===================== RÉCAP / VALIDATION =====================
+function updateRecap() {
+  const d = collectData();
+  const container = $('recapContainer');
+  if (!container) return;
+  container.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px;">
+      <div><strong>Forme :</strong> ${esc(d.forme)}</div>
+      <div><strong>Type statuts :</strong> ${esc(d.type)}</div>
+      <div><strong>Commune :</strong> ${esc(d.commune)}</div>
+      <div><strong>Durée :</strong> ${d.duree} ans</div>
+      <div><strong>Dénomination :</strong> ${esc(d.denom)}</div>
+      <div><strong>Capital :</strong> ${d.capital.toLocaleString('fr-FR')} FCFA</div>
+      <div><strong>Parts :</strong> ${d.nbparts} × ${d.valpart.toLocaleString('fr-FR')} FCFA</div>
+      <div><strong>Gérant :</strong> ${esc(d.civilite)} ${esc(d.prenom)} ${esc(d.nom)}</div>
+      <div><strong>Souscripteurs :</strong> ${d.subs.length}</div>
+      <div><strong>Total versé :</strong> ${d.subs.reduce((a, s) => a + s.money, 0).toLocaleString('fr-FR')} FCFA</div>
+    </div>`;
+}
+
+function updateValidationSummary() {
+  const el = $('validationSummary');
+  if (!el) return;
+  const d = collectData();
+  const rows = document.querySelectorAll('.sub');
+  const totalParts = [...rows].reduce((a, r) => a + (parseInt(r.querySelector('.parts')?.value) || 0), 0);
+  const totalMoney = [...rows].reduce((a, r) => a + (parseInt(r.querySelector('.money')?.value) || 0), 0);
+  const checks = [
+    [!!d.denom, 'Dénomination renseignée'],
+    [!!d.commune, 'Commune renseignée'],
+    [!!d.objet.length, 'Objet social renseigné'],
+    [!!d.nom && !!d.prenom, 'Identité du gérant renseignée'],
+    [d.capital > 0, 'Capital social renseigné'],
+    [d.nbparts > 0 && d.valpart > 0, 'Nombre et valeur des parts renseignés'],
+    [d.capital === d.nbparts * d.valpart, 'Capital = parts × valeur'],
+    [totalParts === d.nbparts, 'Répartition des parts cohérente'],
+    [totalMoney === d.capital, 'Total des versements = capital'],
+    [rows.length > 0, 'Au moins un associé/souscripteur'],
+    [d.forme === 'SARL unipersonnelle' ? rows.length === 1 : rows.length >= 2, 'Nombre d’associés compatible'],
+    [!!d.dateActe, 'Date de l’acte renseignée']
+  ];
+  el.innerHTML = checks.map(([ok, label]) => `<div class="check ${ok ? 'ok' : 'bad'}"><i class="fa-solid ${ok ? 'fa-circle-check' : 'fa-circle-xmark'}"></i><span>${esc(label)}</span></div>`).join('');
+}
+
+function updateFinalStatus() {
+  const el = $('finalStatus');
+  if (!el) return;
+  const d = collectData();
+  const rows = document.querySelectorAll('.sub');
+  const totalParts = [...rows].reduce((a, r) => a + (parseInt(r.querySelector('.parts')?.value) || 0), 0);
+  const totalMoney = [...rows].reduce((a, r) => a + (parseInt(r.querySelector('.money')?.value) || 0), 0);
+  const ok = d.capital === d.nbparts * d.valpart && totalParts === d.nbparts && totalMoney === d.capital && rows.length > 0;
+  el.innerHTML = ok
+    ? `<div class="alert success"><i class="fa-solid fa-circle-check"></i><div><strong>Dossier prêt à être généré.</strong></div></div>`
+    : `<div class="alert danger"><i class="fa-solid fa-triangle-exclamation"></i><div><strong>Dossier à corriger.</strong></div></div>`;
+}
+
+// ===================== COLLECTE =====================
+function collectData() {
+  const ids = ['forme', 'type', 'commune', 'duree', 'denom', 'capital', 'nbparts', 'valpart', 'quartier', 'parcelle', 'tf', 'proprietaire', 'tel', 'email', 'objet', 'civilite', 'prenom', 'nom', 'profession', 'lieu', 'naissance', 'nationalite', 'npi', 'piece', 'pieceNo', 'expiration', 'domicile', 'dateActe'];
+  const o = {};
+  ids.forEach(id => o[id] = $(id)?.value?.trim() || '');
+  o.capital = parseInt(o.capital) || 0;
+  o.nbparts = parseInt(o.nbparts) || 0;
+  o.valpart = parseInt(o.valpart) || 0;
+  o.duree = parseInt(o.duree) || 99;
+  o.objet = o.objet.split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+  o.subs = [];
+  document.querySelectorAll('.sub').forEach(r => {
+    const name = r.querySelector('.name')?.value?.trim() || '';
+    const home = r.querySelector('.home')?.value?.trim() || '';
+    const parts = parseInt(r.querySelector('.parts')?.value || 0);
+    const moneyVal = parseInt(r.querySelector('.money')?.value || 0);
+    if (name || parts) o.subs.push({ name, home, parts, money: moneyVal });
+  });
+  return o;
+}
+
+// ===================== SAUVEGARDE =====================
+let autosaveTimer = null;
+async function saveDraft(silent = false) {
+  if (!currentUser || !currentDossierId) return;
+  clearTimeout(autosaveTimer);
+  autosaveTimer = setTimeout(async () => {
+    try {
+      const data = collectData();
+      await db.collection('dossiers_sarl').doc(currentDossierId).update({
+        donnees: data,
+        etapeActuelle: step + 1,
+        statut: 'brouillon',
+        dateModification: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      if (!silent) toast('Brouillon sauvegardé', 'success');
+    } catch (e) {
+      console.error('Erreur sauvegarde:', e);
+      if (!silent) toast('Erreur de sauvegarde', 'error');
+    }
+  }, 800);
+}
+
+document.addEventListener('input', () => { if (currentDossierId) saveDraft(true); });
+document.addEventListener('change', () => { if (currentDossierId) saveDraft(true); });
+
+// ===================== GÉNÉRATION DOCUMENTS =====================
+const NOTAIRE = 'Maître Fadhil Firmin Gbadebo Éric ADAMON';
+
+function nw(n) {
+  n = Math.round(+n || 0);
+  if (n === 0) return 'zéro';
+  const u = ['zéro','un','deux','trois','quatre','cinq','six','sept','huit','neuf','dix','onze','douze','treize','quatorze','quinze','seize','dix-sept','dix-huit','dix-neuf'];
+  const two = x => {
+    if (x < 20) return u[x];
+    const t = Math.floor(x / 10), r = x % 10;
+    if (t === 7) return r === 1 ? 'soixante et onze' : 'soixante-' + u[10 + r];
+    if (t === 9) return 'quatre-vingt-' + u[10 + r];
+    const b = { 2: 'vingt', 3: 'trente', 4: 'quarante', 5: 'cinquante', 6: 'soixante', 8: 'quatre-vingt' }[t];
+    if (!r) return b;
+    return r === 1 ? b + ' et un' : b + '-' + u[r];
+  };
+  const h = x => {
+    if (x < 100) return two(x);
+    const a = Math.floor(x / 100), r = x % 100;
+    const s = a === 1 ? 'cent' : u[a] + ' cent';
+    return r ? s + ' ' + two(r) : (a > 1 ? s + 's' : s);
+  };
+  const parts = [];
+  const millions = Math.floor(n / 1e6);
+  const milliers = Math.floor((n % 1e6) / 1e3);
+  const reste = n % 1e3;
+  if (millions) parts.push(millions === 1 ? 'un million' : h(millions) + ' millions');
+  if (milliers) parts.push(milliers === 1 ? 'mille' : h(milliers) + ' mille');
+  if (reste) parts.push(h(reste));
+  return parts.join(' ');
+}
+
+function dw(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T12:00:00');
+  if (isNaN(d.getTime())) return '';
+  const mo = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  return `${d.getDate() === 1 ? 'premier' : nw(d.getDate())} ${mo[d.getMonth()]} ${nw(d.getFullYear())}`;
+}
+
+const EXACT_ARTICLES = {
+  8: "Le capital peut être augmenté ou réduit, par décision extraordinaire de l’associé unique, dans les conditions et suivant les modalités fixées par les textes en vigueur.",
+  9: "Les parts sociales ne peuvent jamais être représentées par des titres négociables, nominatifs ou au porteur. Les droits de chaque Associé dans la Société résultent seulement des présentes et des cessions de parts régulièrement consenties selon les modalités énoncées à l’Article 10 alinéa premier ci-après. Une copie ou un extrait de ces actes et pièces pourra être délivrée à chaque Associé, sur sa demande et à ses frais.",
+  10: "1°) La cession de parts sociales entre vifs doit être constatée par écrit et n’est rendue opposable à la société qu’après l’accomplissement de l’une des formalités énoncées à l’article 317 de l’Acte Uniforme. 2°) Elles ne peuvent être cédées à titre onéreux ou gratuit à des tiers non associés qu’avec le consentement de la majorité des associés non-cédants représentant les trois quarts du capital social, déduction faite, des parts de l’associé cédant. Ce consentement sollicité se fait selon la procédure prévue par l’Acte Uniforme (articles 319 et suivants de l’Acte Uniforme). 3°) Si la société donne son consentement à un projet de nantissement de parts sociales soit par notification de la décision à l’intéressé, soit par défaut de réponse dans un délai de trois (3) mois à compter de sa demande, ce consentement emportera agrément du cessionnaire en cas de réalisation forcée des parts sociales régulièrement nanties, à moins que la société ne préfère, après cession racheter sans délai lesdites parts en vue de réduire son capital.",
+  11: "Les parts sociales sont indivisibles à l’égard de la Société qui ne reconnaît qu’un seul propriétaire pour chaque part. Les copropriétaires sont tenus de se faire représenter auprès de la Société par un seul d’entre eux considéré comme seul propriétaire. A défaut d’entente, il sera pourvu par voie de justice à la désignation d’un mandataire commun, à la requête de l’indivisaire le plus diligent. Usufruitier et nu-propriétaire devront également se faire représenter par l’un d’entre eux. A défaut d’entente, la Société considérera l’usufruitier comme représentant valablement le nu-propriétaire, quelle que soit la nature des décisions à prendre.",
+  12: "1°/ Il est reconnu à tout Associé un droit d’information permanent sur les affaires sociales, notamment le droit de communication, lequel s’exerce durant les quinze (15) jours précédant la tenue de l’Assemblée Générale. S’agissant de l’Assemblée Générale Annuelle, le droit de communication porte sur les documents comptables et financiers de l’exercice tels que définis par l’Acte Uniforme OHADA, et le rapport de gestion établi par la Gérance. En ce qui concerne les Assemblées autres que l’Assemblée Annuelle, le droit de communication porte sur le texte des résolutions proposées, le rapport de la Gérance, et le cas échéant, sur le rapport du Commissaire aux Comptes. 2°/ Chaque part donne droit à une fraction des bénéfices et de l’actif social, proportionnellement au nombre de parts existantes ; elle donne droit à une (1) voix dans tous les votes et délibérations. 3°/ Sous réserve des dispositions de l’Article 312 § 5 de l’Acte Uniforme OHADA rendant les Associés solidairement responsables, vis-à-vis des tiers pendant cinq (5) années, de la valeur attribuée aux apports en nature, les Associés ne sont tenus que jusqu’à concurrence du montant des parts qu’ils possèdent. 4°/ Les droits et obligations attachés aux parts sociales suivent ces dernières, dans quelque main qu’elles passent. La possession d’une part, emporte de plein droit, l’adhésion aux Statuts de la Société et aux résolutions prises régulièrement par les Associés. Les représentants, ayants cause, héritiers et créanciers d’un Associé, même s’ils comprennent des mineurs ou des incapables, ne peuvent, sous quelque prétexte que ce soit, requérir l’apposition des scellés sur les biens, papiers et valeurs de la Société, en demander le partage ou la licitation, ni s’immiscer en aucune manière dans les actes de son administration. Ils doivent, pour l’exercice de leurs droits, s’en rapporter aux inventaires sociaux et aux décisions des Associés.",
+  13: "Il est interdit aux personnes physiques, Gérantes ou Associées de se faire consentir par la Société des prêts ou des avances en comptes courants ou autrement, de faire cautionner ou avaliser par elle leurs engagements personnels envers des tiers. Cette interdiction s’applique également aux conjoints, ascendants et descendants des personnes visées, ainsi qu’à toute personne interposée. Toute autre convention entre la Société et un ou plusieurs Associés, ou entre la Société et un ou plusieurs de ses Gérants devra être approuvée par les autres Associés. La Gérance, ou s’il en existe un, les Commissaires aux Comptes, établiront à cet effet un rapport qu’ils présenteront à la prochaine Assemblée ou consultation des Associés. La décision d’approbation sera prise à la majorité requise pour les Décisions Ordinaires, l’Associé intéressé ne prenant pas part au vote et ses parts n’étant pas retenues pour le calcul du quorum et de la majorité. La Gérance est tenue d’aviser le Commissaire aux Comptes, s’il en existe un, des conventions visées à l’alinéa précédent dans un délai d’un (1) mois à compter de la conclusion desdites conventions. Les délibérations relatives aux conventions visées ci-dessus, sont nulles lorsqu’elles ont été prises en l’absence du rapport du Gérant, ou, s’il en existe un, du Commissaire aux Comptes. Elles peuvent être annulées dans le cas où le rapport ne contient pas les informations prévues à l’Article 353 alinéa 1 de l’Acte Uniforme OHADA. Les conventions non approuvées produisent néanmoins leurs effets, à charge pour le ou les Gérants ou Associés contractants de supporter individuellement ou solidairement, selon le cas, les conséquences de ces conventions préjudiciables à la Société. L’action en responsabilité se prescrit au terme d’un délai de trois (3) ans courant à compter de la conclusion de la convention non approuvée ou si elle a été dissimulée, de sa révélation.",
+  14: "La Société ne sera pas dissoute par le décès, l’interdiction, la dotation de conseil judiciaire, la faillite ou la déconfiture d’un Associé.",
+  15: "Le gérant a les pouvoirs nécessaires pour faire tous les actes de gestion dans l’intérêt de la société. Dans les rapports avec les tiers, le gérant engage la société, sous réserve des pouvoirs expressément attribués aux associés par la loi. La société est engagée même par les actes du gérant qui ne relèvent pas de l’objet social, à moins qu’elle ne prouve que le tiers sache que l’acte dépassait cet objet ou qu’il ne pouvait l’ignorer compte tenu des circonstances, sans que la seule publication des statuts suffise à constituer cette preuve. Le gérant est responsable en cas de faute envers la société ou envers les tiers, soit des infractions aux dispositions législatives ou réglementaires, soit des violations aux présents statuts, soit des fautes commises dans sa gestion. Aucune décision des associés ne peut avoir pour effet d’éteindre une action en responsabilité contre le gérant pour faute commise dans l’accomplissement de son mandat.",
+  16: "Monsieur Edjrossè Franck Romuald GNANGUENON ALLAOU est nommé aux fonctions de Gérant et ce pour une durée indéterminée. Monsieur Edjrossè Franck Romuald GNANGUENON ALLAOU, déclare qu’il n’est frappé d’aucune mesure prévue par l’Acte Uniforme OHADA susceptible de lui interdire l’exercice des fonctions de Gérant de société, et qu’il accepte lesdites fonctions.",
+  17: "Un ou plusieurs Commissaires aux Comptes peuvent être nommés si deux (2) des conditions prévues par l’Article 376 de l’Acte Uniforme OHADA sont remplies par la Société, à savoir : - avoir un total du bilan supérieur à 125.000.000 F.CFA, - ou réaliser un chiffre d’affaires annuel supérieur à 250.000.000 F.CFA - ou avoir un effectif permanent de personnes employées supérieur à 50. La Société n’est plus tenue de désigner un Commissaire aux Comptes dès lors qu’elle n’a pas rempli deux (2) des conditions fixées ci-dessus pendant les deux (2) exercices précédant l’expiration du mandat du Commissaire aux Comptes. Le Commissaire aux Comptes ainsi nommé exercera sa mission de contrôle, de certification et d’information conformément aux dispositions de l’Acte Uniforme. Le mandat du Commissaire aux Comptes est d’une durée de trois (3) exercices, renouvelable. La responsabilité civile du Commissaire aux Comptes est engagée, tant à l’égard de la Société que des tiers, des conséquences dommageables des fautes et négligences commises dans l’exercice de ses fonctions. Il est également responsable des dommages causés par les infractions commises par le ou les Gérants de la Société, s’il est établi qu’en ayant eu connaissance, il ne les a pas révélés dans son rapport à l’Assemblée Générale.",
+  18: "a) L’associé unique exerce les pouvoirs dévolus à l’assemblée des associés par les dispositions non contraires du chapitre III relatif aux décisions collectives, du titre II de l’Acte Uniforme susvisé. Il s’ensuit que toutes décisions qui excèdent les pouvoirs reconnus aux gérants sont prises par l’associé unique. Ces décisions sont provoquées par le ou les gérants. Elles le sont également par l’associé unique à la condition qu’il mette les gérants non associés en mesure de présenter leurs observations en temps utile. Le commissaire aux comptes, s’il existe, est informé de l’intervention prochaine de toute décision d’associé, par lettre recommandée avec demande d’avis de réception postée quinze jours au moins avant la date prévue pour la prise de cette décision. b) L’associé unique ne peut déléguer ses pouvoirs. Ses décisions sont répertoriées dans le registre des délibérations coté et paraphé. Les décisions prises en violation de ces dispositions peuvent être annulées à la demande de tout intéressé.",
+  19: "La Gérance, responsable d’un mandat, doit rendre compte de ses actes aux Associés qui ont un droit de contrôle permanent et sans préavis, à la seule condition de ne pas abuser et de ne pas entraver l’exercice normal des fonctions de la Gérance. En cas de difficulté, les Associés seront obligatoirement consultés et organiseront comme ils l’entendent et à la majorité en capital, l’exercice de leur droit de contrôle. En outre, il est reconnu à tout Associé non-Gérant, le droit de poser par écrit, et ce deux (2) fois par exercice, des questions au Gérant sur tout fait de nature à compromettre la continuité de l’exploitation de la Société. Le Gérant dispose d’un délai d’un (1) mois à compter de la date de réception desdites questions pour apporter sa réponse sous forme écrite, dont copie sera aussitôt communiquée au Commissaire aux Comptes, s’il en existe un.",
+  20: "L’exercice social commence le 1<sup>er</sup> Janvier et se termine le 31 Décembre de chaque année ; exception faite du cas prévu à l’Article 7 dernier alinéa de l’Acte Uniforme sur le Droit Comptable du Traité OHADA.",
+  21: "Il est tenu une comptabilité régulière des opérations sociales, conformément aux lois et usages du Commerce. Il est dressé chaque année, à la fin de chaque exercice social, par les soins de la Gérance, des états financiers de synthèse, conformément aux dispositions Législatives et Réglementaires et éventuellement aux dispositions de l’Acte Uniforme OHADA relatif au Droit Comptable. Ces états financiers de synthèse comprendront notamment un inventaire des éléments actifs et passifs de la Société, un bilan résumant l’inventaire et un compte de profits et pertes. Seront également annexés aux états financiers de synthèse : un état des cautionnements avals et garanties donnés par la Société, ainsi qu’un état des sûretés réelles consenties par la Société. La Gérance est tenue d’adresser au Commissaire aux Comptes s’il en existe un, les états financiers de synthèse et le rapport de gestion, et ceci quarante-cinq (45) jours au moins avant la date de l’Assemblée Générale. Tout Associé peut, personnellement ou par fondé de pouvoirs de son choix, prendre communication, au siège social, et à toute époque, de l’inventaire et du bilan, conformément à l’Article 12 § 1 des présents Statuts.",
+  22: "Après approbation des comptes présentés dans les états financiers de synthèse, les produits de la Société constatés par l’inventaire annuel, déduction faite des frais généraux, des charges sociales, ainsi que de tous amortissements de l’actif social et de toutes provisions pour risques commerciaux, industriels et autres, constituent les bénéfices nets. Sur ces bénéfices nets, il est tout d’abord prélevé dix pour cent (10 %) pour constituer le fonds de réserve légale. Ce prélèvement cesse d’être obligatoire lorsque ledit fonds atteint une somme égale au cinquième du capital social. Il reprend son cours lorsque, pour une cause quelconque, ladite réserve est descendue au-dessous de ce cinquième. Le solde appelé dividende est réparti éventuellement entre les Associés, Gérants ou non Gérants, proportionnellement au nombre de parts sociales possédées par chacun d’eux. Toutefois, par Décision Collective Ordinaire, et, le cas échéant, par la Décision même approuvant les comptes de l’exercice, les Associés ont la faculté de prélever sur les bénéfices de cet exercice les sommes qu’ils jugent convenables de fixer pour en faire tel emploi que bon leur semble, notamment, pour les reporter à nouveau, ou les porter à un ou plusieurs fonds de réserves généraux ou spéciaux, le tout selon qu’ils aviseront. Les modalités de paiement des dividendes revenant aux Associés sont fixées par l’Assemblée Générale, laquelle peut déléguer ce droit aux Gérants. Toutefois, la mise en paiement desdits dividendes devra avoir lieu dans un délai maximum de neuf (9) mois à compter de la date de clôture de l’exercice social. Ce délai peut être prorogé par la juridiction compétente à la requête du ou des Gérants. Les Associés ne sont soumis à aucune restitution des dividendes régulièrement distribués. La répétition des dividendes fictives peut être exigée des Associés qui les ont perçus. L’action en répétition se prescrit au terme d’un délai de trois (3) ans courant à compter de la mise en distribution des dividendes. Les dividendes non réclamées dans le délai de cinq (5) ans de leur exigibilité sont prescrites, conformément à la Loi.",
+  23: "En application des dispositions de l’Article 13 des présents Statuts, chaque Associé peut, du consentement de la Gérance, verser dans la caisse sociale, les fonds dont la Société a besoin. Les conditions d’intérêts et de retrait de ces fonds sont déterminées par les Associés prêteurs et la Gérance."
+};
+
+function buildStatuts(d) {
+  const fem = d.civilite === 'Madame';
+  const totalVersements = d.subs.reduce((a, s) => a + s.money, 0);
+  const year = new Date(d.dateActe + 'T12:00:00').getFullYear();
+  let html = '<div class="document">';
+  html += `<p class="right"><span class="bold">L’AN ${nw(year).toUpperCase()}</span><br><span class="bold">ET LE ${dw(d.dateActe)}</span></p>`;
+  html += `<p><span class="bold u">PARDEVANT</span> <span class="bold">${NOTAIRE}</span>, Notaire à LOKOSSA (République du Bénin), soussigné ;</p>`;
+  html += '<p class="center bold u">A COMPARU :</p>';
+  html += `<p>${esc(d.civilite)} ${esc(d.prenom)} <span class="bold">${esc(d.nom)}</span>, ${esc(d.profession)}, demeurant à ${esc(d.domicile)} ;</p>`;
+  html += `<p>Né${fem ? 'e' : ''} à ${esc(d.lieu)}, le ${dw(d.naissance)} ;</p>`;
+  html += `<p>Titulaire ${d.piece === 'CIP' ? 'du certificat d’identification personnelle' : d.piece === 'CNI' ? 'de la carte nationale d’identité' : 'du passeport'} numéro ${esc(d.pieceNo)}, expirant le ${dw(d.expiration)} ;</p>`;
+  html += `<p>De nationalité ${esc(d.nationalite)} ;</p>`;
+  html += `<p><span class="bold u">${fem ? 'LAQUELLE' : 'LEQUEL'}</span>, a établi ainsi qu’il suit les statuts d’une ${esc(d.forme)} qu’il/elle a convenu de constituer.</p>`;
+  html += '<p class="title">STATUTS</p>';
+  const articles = [
+    { num: 1, titre: 'FORME', corps: `Il est formé une ${esc(d.forme)} qui sera régie par les dispositions de l’Acte Uniforme Révisé de l’OHADA relatif au droit des Sociétés Commerciales et du Groupement d’Intérêt Economique (ci‑après désigné « Acte Uniforme »), par toutes autres dispositions légales et règlementaires en vigueur au Bénin ainsi que par les présents statuts.` },
+    { num: 2, titre: 'DÉNOMINATION', corps: `La société prend la dénomination de « ${esc(d.denom)} ». La dénomination sociale doit figurer sur tous les actes et documents émanant de la Société et destinés aux tiers, notamment les lettres, les factures, les annonces et publications diverses. Elle doit être précédée ou suivie immédiatement en caractères lisibles de l’indication de la forme de la société, du montant de son capital social, de l’adresse de son siège social et de la mention de son immatriculation au registre du commerce et du crédit mobilier.` },
+    { num: 3, titre: 'OBJET SOCIAL', corps: `La Société a pour objet en République du Bénin et à l’Etranger :<br>${d.objet.map(x => `- ${esc(x)} ;`).join('<br>')}<br>Et plus généralement, toutes opérations commerciales, financières, industrielles, mobilières ou immobilières pouvant se rattacher directement ou indirectement à l’objet ci‑dessus défini ainsi qu’à tous objets similaires ou connexes ou susceptibles d’en faciliter la réalisation.` },
+    { num: 4, titre: 'SIEGE SOCIAL – SUCCURSALE – BUREAU DE REPRESENTATION OU DE LIAISON', corps: `Le siège social est fixé à ${esc(d.commune)}, quartier ${esc(d.quartier)}${d.parcelle ? ', parcelle « ' + esc(d.parcelle) + ' »' : ''}, TF ${esc(d.tf)}${d.proprietaire ? ', maison ' + esc(d.proprietaire) : ''}, Téléphone : ${esc(d.tel)}, email : <span class="email-blue">${esc(d.email)}</span>. Il pourra être transféré à un autre endroit de la même ville par décision de la gérance et en tout autre lieu par l’associé unique. Des succursales pourront être créées en tous lieux et en tous pays conformément aux articles 116 et suivants de l’Acte Uniforme. De même, la société peut créer des bureaux de représentation ou de liaison en tous lieux et en tous pays conformément aux articles 120-1 et suivants de l’Acte Uniforme. La succursale, le bureau de représentation ou de liaison doivent être immatriculés au registre du commerce et du crédit mobilier conformément aux dispositions organisant ce registre.` },
+    { num: 5, titre: 'DURÉE', corps: `La durée de la société est fixée à ${d.duree} années à compter de la date de son immatriculation au Registre du Commerce et du Crédit Mobilier, sauf prorogation ou dissolution anticipée.` },
+    { num: 6, titre: 'CAPITAL SOCIAL – PARTS SOCIALES', corps: `APPORTS EN NUMERAIRE :<br>L’associé unique apporte à la société la somme de ${nw(d.capital)} (${d.capital.toLocaleString('fr-FR')}) de francs CFA ;<br>Sur cet apport en numéraire :<br>${d.subs.map(s => `<span class="bold">${esc(s.name)}</span>, apporte la somme de ${s.money.toLocaleString('fr-FR')} de Francs CFA.`).join('<br>')}<br>Total des apports formant le capital social d’<span class="bold">${nw(d.capital)}</span> (${d.capital.toLocaleString('fr-FR')}) de francs CFA.` },
+    { num: 7, titre: 'APPORTS', corps: `Le capital social est fixé à la somme de ${nw(d.capital)} (${d.capital.toLocaleString('fr-FR')}) de francs CFA, constitué au moyen des apports ci‑dessus constatés. Il est divisé en ${nw(d.nbparts)} (${d.nbparts}) parts égales, de ${d.valpart.toLocaleString('fr-FR')} francs chacune, intégralement souscrites, par l’associé unique ainsi qu’il suit :<br>${(() => { let cumul = 0; return d.subs.map(s => { const debut = cumul + 1; const fin = cumul + s.parts; cumul = fin; return `<span class="bold">${esc(s.name)}</span>, à concurrence de ${s.parts} parts, numérotées de ${debut} à ${fin} ;`; }).join('<br>'); })()}<br>Total égal au nombre des parts créées, soit ${nw(d.nbparts)} parts.` }
+  ];
+  const titres = [
+    'AUGMENTATION ET REDUCTION DE CAPITAL', 'REPRESENTATION DES PARTS SOCIALES', 'CESSION ET TRANSMISSION DES PARTS SOCIALES',
+    'INDIVISIBILITE DES PARTS', 'DROITS ET OBLIGATIONS DES ASSOCIES', 'CONVENTIONS ENTRE LA SOCIETE ET LES ASSOCIES OU ENTRE LA SOCIETE ET LES GERANTS',
+    'DECES - INTERDICTION - FAILLITE ET DECONFITURE D’UN ASSOCIE', 'DE LA GERANCE', 'NOMINATION DES GERANTS STATUTAIRES',
+    'COMMISSAIRE AUX COMPTES', 'DECISION DE L’ASSOCIEE UNIQUE', 'DROIT DE SURVEILLANCE PAR LES ASSOCIES NON-GERANTS',
+    'EXERCICE SOCIAL', 'COMPTES', 'AFFECTATION ET REPARTITION DES BENEFICES - DIVIDENDES', 'DEPOT DE FONDS PAR LES ASSOCIES'
+  ];
+  for (let i = 8; i <= 23; i++) {
+    const idx = i - 8;
+    const titre = titres[idx] || '';
+    let corps = EXACT_ARTICLES[i] || `(Dispositions de l’article ${i} selon l’Acte Uniforme.)`;
+    if (i === 16) {
+      corps = `${esc(d.civilite)} ${esc(d.prenom)} <span class="bold">${esc(d.nom)}</span> est nommé aux fonctions de Gérant et ce pour une durée indéterminée. ${esc(d.civilite)} ${esc(d.prenom)} <span class="bold">${esc(d.nom)}</span>, déclare qu’il/elle n’est frappé(e) d’aucune mesure prévue par l’Acte Uniforme OHADA susceptible de lui interdire l’exercice des fonctions de Gérant de société, et qu’il/elle accepte lesdites fonctions.`;
+    }
+    articles.push({ num: i, titre, corps });
+  }
+  const nbSouscripteurs = d.subs.length;
+  const sujet = nbSouscripteurs === 1 ? 'le souscripteur' : 'les souscripteurs';
+  const verbeVerser = nbSouscripteurs === 1 ? 'a versé' : 'ont versé';
+  const verbeDeposer = nbSouscripteurs === 1 ? 'a été déposée' : 'ont été déposées';
+  const pronom = nbSouscripteurs === 1 ? 'lui' : 'eux';
+  articles.push({
+    num: 24, titre: 'DECLARATION DE SOUSCRIPTION ET DE VERSEMENT',
+    corps: `Le comparant déclare :<br>- Que les ${nw(d.nbparts)} (${d.nbparts}) parts sociales de ${d.valpart.toLocaleString('fr-FR')} Francs CFA chacune de la société dénommée <span class="bold">« ${esc(d.denom)} »</span>, ont été entièrement souscrites.<br>- Que ${sujet} ${verbeVerser} le montant total de souscription soit au total la somme de ${nw(totalVersements)} (${totalVersements.toLocaleString('fr-FR')}) de Francs CFA. Laquelle somme totale de ${nw(totalVersements).toUpperCase()} (${totalVersements.toLocaleString('fr-FR')}) de Francs CFA ${verbeDeposer} en l’étude du Notaire soussigné au nom de la société dès avant ce jour. Il requiert le Notaire Soussigné de ${pronom} donner acte de cette déclaration. Sur ce requis, ${NOTAIRE}, Notaire Soussigné affirme sur la présentation qui lui a été faite, de la liste de souscription des parts sociales mentionnant la somme versée par ${sujet}. Que le montant du versement mentionné sur la liste de souscription représentant au total la somme de ${nw(totalVersements).toUpperCase()} (${totalVersements.toLocaleString('fr-FR')}) de Francs CFA est conforme au montant des sommes effectivement déposées.`
+  });
+  articles.forEach(a => {
+    const numStr = a.num === 1 ? '1<sup>er</sup>' : a.num;
+    html += `<p class="article">ARTICLE ${numStr} : ${esc(a.titre)}</p>`;
+    html += `<p>${a.corps}</p>`;
+  });
+  html += '<p class="article">ANNEXES</p>';
+  html += '<p>Sont demeurées ci‑après annexées après mention :</p>';
+  html += '<p>La liste de souscription contenant les noms, prénoms, domicile et la somme versée par l’associé unique ;</p>';
+  html += '<p class="right bold u">DONT ACTE SUR SEPT (07) PAGES</p>';
+  html += '<p>Contenant</p><p>Renvois :</p><p>Mots rayés nuls :</p><p>Chiffre rayé nul :</p><p>Lignes entières rayées nulles :</p><p>Barres tirées dans les blancs :</p>';
+  html += `<p>FAIT ET PASSE en l’Etude de <span class="bold">${NOTAIRE}</span> ;</p>`;
+  html += '<p>Et après lecture faite, le comparant, ès‑nom et nom, a signé avec le Notaire Soussigné.</p>';
+  html += '<table class="sig"><thead><tr><th>NOMS ET PRENOMS</th><th>SIGNATURES</th></tr></thead><tbody>';
+  html += `<tr><td>${esc(d.civilite)} ${esc(d.prenom)} <span class="bold">${esc(d.nom)}</span></td><td>&nbsp;</td></tr>`;
+  html += `<tr><td><span class="bold">${NOTAIRE}</span><br>Notaire</td><td>&nbsp;</td></tr>`;
+  html += '</tbody></table><p class="page">7</p></div>';
+  return html;
+}
+
+function buildAnnexe(d) {
+  let html = '<div class="document">';
+  html += '<p class="center bold u" style="font-size:14pt">ANNEXE</p>';
+  html += '<p class="center u">Liste de souscription et d’état des versements de la société</p>';
+  html += `<p class="center">« ${esc(d.denom)} » ${esc(d.forme)}, au capital de ${nw(d.capital).toUpperCase()} (${d.capital.toLocaleString('fr-FR')}) de Francs CFA</p>`;
+  html += `<p><span class="bold">Siège social :</span> à ${esc(d.commune)}, quartier ${esc(d.quartier)}${d.parcelle ? ', parcelle « ' + esc(d.parcelle) + ' »' : ''}, TF ${esc(d.tf)}${d.proprietaire ? ', maison ' + esc(d.proprietaire) : ''}, Téléphone : ${esc(d.tel)}, email : <span class="email-blue">${esc(d.email)}</span></p>`;
+  html += '<table><thead><tr><th>Noms, Prénoms et domicile des souscripteurs</th><th>Nombre de parts sociales Souscrites</th><th>Montant total des parts sociales en FCFA</th><th>Montant des versements effectués en FCFA</th></tr></thead><tbody>';
+  d.subs.forEach(s => {
+    html += `<tr><td><span class="bold">${esc(s.name)}</span>, demeurant à ${esc(s.home)}</td><td style="text-align:center">${s.parts} parts</td><td style="text-align:right">${s.money.toLocaleString('fr-FR')} FCFA</td><td style="text-align:right">${s.money.toLocaleString('fr-FR')} FCFA</td></tr>`;
+  });
+  const totalParts = d.subs.reduce((a, s) => a + s.parts, 0);
+  const totalMoney = d.subs.reduce((a, s) => a + s.money, 0);
+  html += `<tr><td><strong>TOTAL DES PARTS SOCIALES SOUSCRITES</strong></td><td style="text-align:center"><strong>${totalParts} Parts</strong></td><td style="text-align:right"><strong>${totalMoney.toLocaleString('fr-FR')} FCFA</strong></td><td></td></tr>`;
+  html += `<tr><td><strong>TOTAL versements effectués</strong></td><td></td><td></td><td style="text-align:right"><strong>${totalMoney.toLocaleString('fr-FR')} FCFA</strong></td></tr>`;
+  html += '</tbody></table>';
+  html += '<p>Le présent état constatant la souscription des parts sociales en numéraires de la société est certifié sincère et véritable par le comparant, ès‑nom et nom.</p>';
+  html += '<p>Mention des présentes est consentie partout où besoin sera.</p>';
+  html += '<p>FAIT ET PASSE en l’étude et reçu aux minutes du Notaire soussigné.</p>';
+  const year = new Date(d.dateActe + 'T12:00:00').getFullYear();
+  html += `<p class="right">L’AN ${nw(year).toUpperCase()}<br>ET LE ${dw(d.dateActe)}</p>`;
+  html += `<p>Et après lecture faite, le comparant, ès‑nom et nom, a signé avec <span class="bold">${NOTAIRE}</span>, Notaire soussigné.</p>`;
+  html += '<table class="sig"><thead><tr><th>NOMS ET PRENOMS</th><th>SIGNATURES</th></tr></thead><tbody>';
+  html += `<tr><td>${esc(d.civilite)} ${esc(d.prenom)} <span class="bold">${esc(d.nom)}</span></td><td>&nbsp;</td></tr>`;
+  html += `<tr><td><span class="bold">${NOTAIRE}</span><br>Notaire</td><td>&nbsp;</td></tr>`;
+  html += '</tbody></table></div>';
+  return html;
+}
+
+function adaptDocumentsForForme(d) {
+  const plural = d.forme === 'SARL pluripersonnelle';
+  if (!plural) return;
+  const replacements = [
+    [/DECISION DE L’ASSOCIEE UNIQUE/g, 'DECISIONS COLLECTIVES DES ASSOCIES'],
+    [/L’associé unique/g, 'Les associés'], [/l’associé unique/g, 'les associés'],
+    [/de l’associé unique/g, 'des associés'], [/par l’associé unique/g, 'par les associés'],
+    [/à l’associé unique/g, 'aux associés'], [/L’Associé unique/g, 'Les Associés'], [/l’Associé unique/g, 'les Associés']
+  ];
+  for (const key of ['statuts', 'annexe']) {
+    if (!docs[key]) continue;
+    replacements.forEach(([re, rep]) => { docs[key] = docs[key].replace(re, rep); });
+    docs[key] = docs[key].replace(/Le comparant/g, 'Les comparants').replace(/le comparant/g, 'les comparants');
+  }
+}
+
+function validateScenario() {
+  const d = collectData();
+  const rows = document.querySelectorAll('.sub');
+  if (d.forme === 'SARL unipersonnelle' && rows.length !== 1) { toast('Une SARL unipersonnelle doit comporter exactement un associé.', 'error'); return false; }
+  if (d.forme === 'SARL pluripersonnelle' && rows.length < 2) { toast('Une SARL pluripersonnelle doit comporter au moins deux associés.', 'error'); return false; }
+  return true;
+}
+
+function generate() {
+  if (!validateStep(5) || !validateScenario()) return;
+  const d = collectData();
+  if (d.capital !== d.nbparts * d.valpart) { toast('Capital ≠ parts × valeur.', 'error'); return; }
+  docs.statuts = buildStatuts(d);
+  docs.annexe = buildAnnexe(d);
+  adaptDocumentsForForme(d);
+  $('preview').classList.remove('hidden');
+  showTab('statuts');
+  toast('Documents générés avec succès.', 'success');
+  if (currentDossierId) {
+    db.collection('dossiers_sarl').doc(currentDossierId).update({
+      statut: 'termine',
+      etapeActuelle: 6,
+      donnees: d,
+      dateModification: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => logAction('DOCUMENTS_GENERE', currentDossierId, { reference: currentReference })).catch(console.warn);
+  }
+  $('preview').scrollIntoView({ behavior: 'smooth' });
+}
+
+function showTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  $('paper').innerHTML = docs[tab] || '';
+}
+
+function wrapForExport(inner, title) {
+  return `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>${esc(title)}</title><style>
+body{font-family:"Times New Roman",serif;color:#111}.document{max-width:820px;margin:auto;padding:18mm;font-size:12pt;line-height:1.45;text-align:justify}.right{text-align:right}.center{text-align:center}.bold{font-weight:700}.u{text-decoration:underline}.article{font-weight:700;text-decoration:underline;margin:13pt 0 6pt}.title{font-weight:700;text-decoration:underline;text-align:center;font-size:14pt;margin:14pt 0}.document table{width:100%;border-collapse:collapse;margin:14pt auto}.document th,.document td{border:1px solid #000;padding:6pt 7pt;vertical-align:top}.document th{text-align:center;font-weight:700}.sig{width:86%}.sig td{height:48pt}.page{text-align:right;margin-top:24pt}.email-blue{color:#0563C1}@media print{@page{size:A4;margin:15mm 17mm}.document{padding:0;max-width:none}}
+</style></head><body>${inner}</body></html>`;
+}
+
+function download(blob, name) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+}
+
+$('generate').addEventListener('click', generate);
+document.querySelectorAll('.tabs button').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+
+$('word').addEventListener('click', () => {
+  if (!docs[currentTab]) { toast('Générez d’abord les documents.', 'error'); return; }
+  download(new Blob([wrapForExport(docs[currentTab], currentTab)], { type: 'application/msword' }), currentTab + '.doc');
+  toast('Export Word réussi.', 'success');
+});
+$('html').addEventListener('click', () => {
+  if (!docs[currentTab]) { toast('Générez d’abord les documents.', 'error'); return; }
+  download(new Blob([wrapForExport(docs[currentTab], currentTab)], { type: 'text/html' }), currentTab + '.html');
+  toast('Export HTML réussi.', 'success');
+});
+$('pdf').addEventListener('click', () => {
+  if (!docs[currentTab]) { toast('Générez d’abord les documents.', 'error'); return; }
+  const w = window.open('', '_blank', 'width=900,height=800');
+  if (!w) { toast('Autorisez les fenêtres pop‑up.', 'error'); return; }
+  w.document.write(wrapForExport(docs[currentTab], currentTab));
+  w.document.close();
+  setTimeout(() => w.print(), 500);
+});
+
+// ===================== AUTOCOMPLÉTION =====================
+const communes = [
+  'Abomey','Abomey-Calavi','Adjarra','Adjohoun','Adja-Ouèrè','Aguégués','Aplahoué','Allada',
+  'Athiémé','Avrankou','Banikoara','Bantè','Bassila','Bembéréké','Bohicon','Bopa','Bonou',
+  'Comè','Copargo','Covè','Cotonou','Dangbo','Dassa-Zoumè','Djakotomey','Djidja','Dogbo',
+  'Djougou','Glazoué','Gogounou','Grand-Popo','Houéyogbé','Ifangni','Kandi','Karimama',
+  'Kétou','Klouékanmè','Kouandé','Kpomassè','Lalo','Lokossa','Malanville','Matéri','Natitingou',
+  "N'Dali",'Nikki','Ouaké','Ouidah','Ouèssè','Parakou','Péhunco','Pobè','Porto-Novo','Pèrèrè',
+  'Sakété','Savalou','Savè','Ségbana','Sèmè-Kpodji','Sinendé','Sô-Ava','Tanguiéta','Tchaourou',
+  'Toffo','Tori-Bossito','Toucountouna','Toviklin','Zagnanado','Za-Kpota','Zè','Zogbodomey',
+  'Ouinhi','Agbangnizoun'
+].sort((a,b)=>a.localeCompare(b,'fr'));
+
+const professions = [
+  'Agent commercial','Agent immobilier','Agriculteur','Architecte','Artisan','Artiste','Avocat',
+  'Banquier','Boucher','Boulanger','Cadre administratif','Cadre commercial','Chauffeur','Chirurgien',
+  'Commerçant','Comptable','Conseiller','Consultant','Couturier','Développeur informatique','Directeur',
+  'Enseignant','Entrepreneur','Étudiant','Expert-comptable','Fonctionnaire','Gestionnaire','Ingénieur',
+  'Informaticien','Journaliste','Juriste','Médecin','Notaire','Pharmacien','Plombier','Professeur',
+  'Secrétaire','Technicien','Vendeur','Électricien','Éleveur','Employé','Gérant de société',
+  'Opérateur économique','Restaurateur','Transporteur','Sans profession','Retraité','Autre'
+].sort((a,b)=>a.localeCompare(b,'fr'));
+
+const nationalites = [
+  'Afghane','Albanaise','Algérienne','Allemande','Andorrane','Angolaise','Antiguaise','Argentine',
+  'Arménienne','Australienne','Autrichienne','Azerbaïdjanaise','Bahamaise','Bahreïnienne','Bangladaise',
+  'Barbadienne','Belge','Belizienne','Béninoise','Bhoutanaise','Biélorusse','Birmane','Bolivienne',
+  'Bosnienne','Botswanaise','Brésilienne','Britannique','Brunéienne','Bulgare','Burkinabè','Burundaise',
+  'Cambodgienne','Camerounaise','Canadienne','Cap-Verdienne','Centrafricaine','Chadienne','Chilienne',
+  'Chinoise','Chypriote','Colombienne','Comorienne','Congolaise','Costaricaine','Croate','Cubaine',
+  'Danoise','Djiboutienne','Égyptienne','Émirienne','Équatorienne','Érythréenne','Espagnole','Estonienne',
+  'Eswatinienne','Éthiopienne','Fidjienne','Finlandaise','Française','Gabonaise','Gambienne','Géorgienne',
+  'Ghanéenne','Grecque','Grenadienne','Guatémaltèque','Guinéenne','Guinéenne équatoriale','Guyanienne',
+  'Haïtienne','Hondurienne','Hongroise','Indienne','Indonésienne','Irakienne','Iranienne','Irlandaise',
+  'Islandaise','Israélienne','Italienne','Ivoirienne','Jamaïcaine','Japonaise','Jordanienne','Kazakhstanaise',
+  'Kényane','Kirghize','Kiribatienne','Koweïtienne','Laotienne','Lettonne','Libanaise','Libérienne','Libyenne',
+  'Liechtensteinoise','Lituanienne','Luxembourgeoise','Macédonienne','Malaisienne','Malawienne','Maldivienne',
+  'Malienne','Maltaise','Marocaine','Mauricienne','Mauritanienne','Mexicaine','Micronésienne','Moldave',
+  'Monégasque','Mongole','Monténégrine','Mozambicaine','Namibienne','Nauruane','Népalaise','Néerlandaise',
+  'Néo-Zélandaise','Nicaraguayenne','Nigérienne','Nigériane','Nord-Coréenne','Norvégienne','Omanaise',
+  'Ougandaise','Ouzbèke','Pakistanaise','Palestinienne','Panaméenne','Papouasienne','Paraguayenne','Péruvienne',
+  'Philippine','Polonaise','Portugaise','Qatarienne','Roumaine','Russe','Rwandaise','Saint-Lucienne',
+  'Saint-Marinaise','Saoudienne','Sénégalaise','Serbe','Seychelloise','Sierra-Léonaise','Singapourienne',
+  'Slovaque','Slovène','Somalienne','Soudanaise','Sud-Africaine','Sud-Coréenne','Sud-Soudanaise','Sri-Lankaise',
+  'Suédoise','Suisse','Surinamaise','Syrienne','Tadjike','Tanzanienne','Tchadienne','Tchèque','Thaïlandaise',
+  'Timoraise','Togolaise','Tongienne','Trinidadienne','Tunisienne','Turkmène','Turque','Tuvaluane','Ukrainienne',
+  'Uruguayenne','Vanuatuane','Vaticanaise','Vénézuélienne','Vietnamienne','Yéménite','Zambienne','Zimbabwéenne'
+].sort((a,b)=>a.localeCompare(b,'fr'));
+
+const activites = [
+  'Abattage, transformation et conservation des viandes','Accessoiriste',
+  'Achat, vente, importation et exportation de véhicules automobiles neufs ou occasion',
+  'Achat de textiles','Achat et distribution de produits brassicols',
+  'Achat et vente d\'acajou','Achat et vente d\'accessoires de couture, mercerie',
+  'Achat et vente d\'accessoires de portables','Achat et vente d\'appareils électroménagers',
+  'Achat et vente d\'appareils radiophoniques, télévisuels et photographiques',
+  'Achat et vente d\'articles de bonneterie','Achat et vente d\'articles de décoration',
+  'Achat et vente d\'articles de plomberie','Achat et vente d\'articles de quincaillerie',
+  'Achat et vente d\'articles optiques','Achat et vente de bijoux','Achat et vente de bois',
+  'Achat et vente de boissons','Achat et vente de casques','Achat et vente de cercueils',
+  'Achat et vente de charbon','Achat et vente de chaussures',
+  'Achat et vente de combustibles solides, liquides, gazeux et de produits dérivés',
+  'Achat et vente de compléments alimentaires','Achat et vente de consommables biomédicaux',
+  'Achat et vente de ferraille','Achat et vente de fournitures de bureau',
+  'Achat et vente de fournitures de bureau,librairie et papeterie',
+  'Achat et vente de fournitures de matelasserie','Achat et vente de fournitures scolaires',
+  'Achat et vente de friperie','Achat et vente de fruits et légumes frais',
+  'Achat et vente de gravillons, sable','Achat et vente de groupes électrogènes',
+  'Achat et vente de jeux vidéos','Achat et vente de jouets, articles de décoration',
+  'Achat et vente de Layettes','Achat et vente de lingerie','Achat et vente de livres',
+  'Achat et vente de machines à coudre','Achat et vente de matériels de bureau',
+  'Achat et vente de matériels de vitrerie','Achat et vente de matériels électriques',
+  'Achat et vente de matériels électriques et électroniques',
+  'Achat et vente de matériels informatiques','Achat et vente de matières plastiques',
+  'Achat et vente de mêches','Achat et vente de mobiliers','Achat et vente de montres et de bracelets',
+  'Achat et vente de montures','Achat et vente de motocycles et accessoires',
+  'Achat et vente de Mousse et Matelas','Achat et vente de noix d\'anacarde',
+  'Achat et vente de panneaux solaires','Achat et vente de peau de boeuf',
+  'Achat et vente de pétrole lampant et diverses huiles de vidange',
+  'Achat et vente de pièces de rechange industrielles',
+  'ACHAT ET VENTE DE PIÈCES DÉTACHÉES D\'AUTOMOBILES ET AUTRES VÉHICULES OUTILLAGE ÉLECTRIQUE',
+  'Achat et vente de pierres précieuses Or et Diamant',
+  'Achat et vente de plantes médicales','Achat et vente de pneus et accessoires automobiles',
+  'Achat et vente de poules locales','Achat et vente de produits agricoles',
+  'Achat et vente de produits agroalimentaires','Achat et vente de produits alimentaires',
+  'Achat et vente de produits bio','Achat et vente de produits chimiques',
+  'Achat et vente de produits congelés','Achat et vente de produits cosmétiques et parfumerie',
+  'Achat et vente de produits de boulangerie','Achat et vente de produits d\'entretien',
+  'Achat et vente de produits d\'hygiène','Achat et vente de produits d\'origine végétale et animale',
+  'Achat et vente de produits électroniques','Achat et vente de produits forestiers',
+  'Achat et vente de produits GSM','Achat et vente de produits halieutiques poissonnerie',
+  'Achat et vente de produits laitiers','Achat et vente de produits manufacturés',
+  'Achat et vente de produits pétroliers, hydrocarbures et dérivées de pétrole',
+  'Achat et vente de produits pharmaceutiques et appareils médicaux',
+  'Achat et vente de produits phytosanitaires','Achat et vente de produits tropicaux',
+  'Achat et vente de produits vivriers','Achat et vente de Provende',
+  'achat et vente de sel','Achat et vente de semences agricoles',
+  'Achat et vente de tabacs manufacturés','Achat et vente de tapis et moquettes',
+  'Achat et vente de téléphones et accessoires',
+  'Achat et vente de textile et d\'effets vestimentaires','Achat et vente de tissus',
+  'Achat et vente de véhicules d\'occasion et autres biens d\'occasion',
+  'Achat et vente de verres','Achat et vente de vêtements, prêt à porter',
+  'Achat et vente de viande et boucherie','Achat et vente d\'eau minérale',
+  'Achat et vente d\'emballage','Achat et vente d\'engrais et produits de traitement organique',
+  'Achat et vente d\'équipements de plomberie','Achat et vente d\'équipements de sécurité',
+  'Achat et vente d\'équipements de sport','Achat et vente de produits de la loterie',
+  'Achat et vente d\'extincteurs','Achat et vente d\'huile à moteur',
+  'Achat et vente d\'huile végétale','Achat et vente d\'instruments de musique',
+  'Achat et vente d\'objets d\'arts','Achat et vente d\'objets de piété',
+  'Achat et vente d\'ustensiles de cuisine','Action sociale','Activités aéroportuaires',
+  'Activités annexes à la culture et à l\'Elevage',
+  'Activités annexes à la sylviculture et à l\'exploitation forestière',
+  'Activités annexes à l\'extraction de pétrole brut et de gaz naturel',
+  'Activités artistiques et culturelles',
+  'Activités cinématographiques, de radio, de télévision et de spectacle',
+  'Activités comptables et d\'audit, conseil fiscal',
+  'Activités d\'administration générale, économique et sociale',
+  'Activités d\'administration publique','Activités d\'agences de presse',
+  'Activités d\'architecture, d\'ingénierie et autres activités techniques',
+  'Activités d\'autres organisations associatives','Activités d\'auxiliaires d\'assurance',
+  'Activités d\'auxiliaires financières et d\'assurance','Activités de banque centrale',
+  'Activités de centre de loisirs','Activités de change',
+  'Activités de formation permanente et autres activités d\'enseignement',
+  'Activités de jeux de hasard et d\'argent',
+  'Activités de jeux, activités sportives ou récréatives',
+  'Activités de poste et de courrier',
+  'Activités de production, d\'égrennage et de contrôle de coton',
+  'Activités de radio et de télévision','Activités de santé et d\'action sociale',
+  'Activités de services personnels','Activités d\'enquête et de sécurité',
+  'Activités des agences de voyages','Activités des agences immobilières',
+  'Activités des auxiliaire des transport',
+  'Activités des médiathèques, musées, réserves',
+  'Activités des médiathèques, musées, réserves naturelles',
+  'Activités des ménages en tant qu\'employeurs de personnel domestique',
+  'Activités des organisations économiques',
+  'Activités des organisations extraterritoriales',
+  'Activités des organisations politiques','Activités des organisations religieuses',
+  'Activités des syndicats de travailleurs','Activités des tradipraticiens',
+  'Activités d\'essais et d\'analyses techniques',
+  'Activités d\'études de marché et de sondage, conseil pour les affaires et le management',
+  'Activités d\'organisation des transports','Activités hospitalières',
+  'Activités immobilières','Activités informatiques et activités connexes',
+  'Activités juridiques, comptables et de conseil de gestion',
+  'Activités photographiques','Activités portuaires','Activités pour la santé humaine',
+  'Activités récréatives, culturelles et sportives',
+  'Activités sportives ou récréatives','Activités vétérinaires',
+  'Affichage et location de panneaux publicitaires','Agence de communication',
+  'Agence de voyage','Agence générale d\'assurances','Agence maritime',
+  'Agriculture','Agriculture, chasse et activités annexes','Agro Business','Agropastorale',
+  'Ajusteur','Analyse et recherche de projet de financement','Analyses biomédiacales',
+  'Apprêt et tannage des cuirs',
+  'Approvisionnement en intrants agricoles et en produits phytosanitaires de toutes cultures',
+  'Architecture','Arts plastiques','arts plstiques',
+  'Assainissement, voirie et gestion des déchets','Assistance administrative',
+  'Assistance aux entreprises, gestion des ressources humaines, entretien de recrutement, formation personnelle',
+  'Assistance comptable','Assistance en Gestion des Entreprises','Assurance',
+  'Assurance, dommages','Assurance-vie, capitalisation et caisses de retraite','Auberge',
+  'Authentificaion, certification et protection internationale de documents','Auto-école',
+  'Autres activités liées au numérique','Autres intermédiations monétaires',
+  'Autres transformations et conservations des poissons, crustacés et mollusques',
+  'Banque','Bar restaurant','Bâtiments et travaux publics, assainissement','Bijouterie',
+  'Biscuiterie et pâtisseries de conservation','Boucherie','Boulangerie',
+  'Bureau de change et de devises manuelles','Bureau d\'études','Cabinet conseil',
+  'Cabinet d\'architecture et d\'urbanisme',
+  'Cabinet d\'études en économie et finances publiques,travaux statistiques et bases de données',
+  'Cabinet et Pharmacie vétérinaire','Cabinet médical',
+  'Captage, traitement et distribution d\'eau',
+  'Chasse, piégeage, repeuplement en gibier et activités annexes',
+  'Chocolaterie, confiserie','Climatisation','Coiffure et soins de beauté',
+  'Cokéfaction, traitement de combustibles nucléaires','Collecte des ordures ménagères',
+  'Commerce de détail de biens d\'occasion','Commerce de détail de carburants',
+  'Commerce de détail en magasin spécialisé de produits pharmaceutiques et médicaux, de parfumerie et de produits de beauté',
+  'Commerce de détail en magasin spécialisé de quincaillerie, peintures, verre et articles techniques en verre',
+  'Commerce de détail en magasin spécialisé de textiles, habillement, chaussures et articles en cuir',
+  'Commerce de détail et réparation d\'articles domestiques',
+  'Commerce de détail sur éventaires et marchés de viandes et poissons',
+  'Commerce de gros de machines, d\'équipements et fournitures industriels',
+  'Commerce de gros de machines, d\'équipements et fournitures mécaniques',
+  'Commerce de gros de produits agricoles bruts et d\'aliments pour animaux',
+  'Commerce de gros de produits agricoles bruts, d\'animaux vivants, de produits alimentaires, boissons et tabacs',
+  'Commerce de gros de produits alimentaires, boissons et tabacs manufacturés',
+  'Commerce de gros de produits intermédiaires non agricoles',
+  'Commerce de gros de produits pharmaceutiques et médicaux',
+  'Commerce de gros de textiles, habillement et chaussures',
+  'Commerce de gros et activités d\'intermédiaires du commerce de gros',
+  'Commerce de véhicules automobiles','Commerce électronique',
+  'Commerce et réparation d\'automobiles','Commerce et réparation de motocycles',
+  'Commerce général','Commerce général et divers',
+  'Commerce, réparation de véhicules automobiles et d\'articles domestiques',
+  'Commercialisation de centrales photovoltaiques ou tous produits,matériels liées aux énergies renouvelables',
+  'Commercialisation de riz','Commercialisation de savons','Commercialisation de soja',
+  'Commercialisation des oeufs de table',
+  'Commercialisation, industrialisation et exportation des produits forestiers et tropicaux en occurrence l\'acajou et karité',
+  'COMMISSION DE TRANSPORT FRÊT ET VOYAGEURS','Communication',
+  'Communications, informations, réalisation et Edition de magazines traduction, interprétariat',
+  'Conception et réalisation de logiciels, études informatiques',
+  'Conception et réalisation de supports et articles publicitaires',
+  'Conception, développement et exploitation de plates formes de transaction à distance',
+  'Conception, étude et réalisation de tous travaux publics et privés, de bâtiment, de génie civil',
+  'Confection et vente de bijoux,sacs et chaussures en perles',
+  'Confection et vente de lunettes','Confection et vente de vêtements',
+  'Conseil en management de la qualité',
+  'Conseil en transformation numérique, en services en ingénierie informatique',
+  'Conseil informatique et développements logiciels',
+  'Conseil juridique et fiscal aux entreprises et aux sociétés','Conseils agricoles',
+  'Conseils en communication et en marketing','Conseils en fiscalité',
+  'Conseils en gestion','Conseils en relations clients des entreprises',
+  'Conseils en stratégie et organisation','Conseils et Formation en Stratégie',
+  'Conseils juridiques','Conseils, étude et équipements','Consignation maritime',
+  'Construction de bâtiments, génie civil','Construction de bâtiments, travaux publics et génie civil',
+  'Construction de véhicules automobiles',
+  'Construction et menuiserie métalliques, fabrication de citernes, réservoirs et générateurs de vapeur',
+  'Constructions et réparations navales,aéronautiques et ferroviaires',
+  'Consultation en analyse de projets et formation','Consulting','Cordonnerie',
+  'Courtage d\'assurances et de réassurances',
+  'Courtage, transport public de personnes et de marchandises, entretien','Couture',
+  'Création de mode','Création d\'objets d\'arts',
+  'Création et gestion d\'agences maritimes, toutes opérations de manutention',
+  'Création et référencement de sites internet',
+  'Création, installation, gestion et administration de complexes hôteliers, de restauration, de bars, de boîtes de nuit, de centre de distraction',
+  'Crêche','Crédit-bail et autres activités de crédit','Culture de céréales',
+  'Culture de fruits, de noix, de plantes pour boisson ou épices','Culture de banane',
+  'CULTURE DE L\'ANANAS','Culture de légumes, horticulture, pépinières',
+  'Culture de plantes à épices','Culture de plantes oléagineuses',
+  'Culture de tubercules et de légumes à cosse secs','Culture du cacao',
+  'Culture du café (café coque), du thé','Culture du coton','Décoration',
+  'Déménagement','Dépôt de ciments','Design graphique','Dessin bâtiment',
+  'Développement informatique, développement de sites web','Distribution de gaz domestique',
+  'Distribution de matériel paramédical','Distribution de matériels industriels',
+  'Distribution, vente, location de bâches et chaises','Diverses prestations de services',
+  'Domiciliation de toutes sociétés, établissements, recouvrement de créances',
+  'Dressage d\'animaux','Ebénisterie','Edition','Edition de livres et périodiques',
+  'Edition de livres, journaux, revues et périodiques',
+  'Edition de logiciels, de solutions numériques',
+  'Edition et diffusion de programmes radio',
+  'Edition et diffusion de programmes télévisuels','Edition et Impression de publications',
+  'Edition, imprimerie et reproduction d\'enregistrements','Égrenage du coton',
+  'Egrenage du coton-graine','Electricité bâtiment','Electricité industrielle',
+  'Elevage','Elevage de bétails','Elevage de bovins','Elevage de camélidés',
+  'Elevage de volailles','Elevage d\'ovins, de caprins, d\'équidés','Elevage et vente de lapins',
+  'Energie et systèmes énergétiques, Ingénierie, hygiène sécurité et environnement',
+  'Energie renouvelable','Enlèvement portuaire','Enseignement préscolaire et primaire',
+  'Enseignement secondaire général',
+  'Enseignement secondaire technique et/ou professionnel','Enseignement supérieur',
+  'Entreposage','Entreprise générale de production et de diffusion audiovisuelle',
+  'Entretien de véhicule','Entretien et nettoyage',
+  'Entretien et réparation d\'appareils électroménagers et autres',
+  'Entretien et réparation de véhicules automobiles','Esthétique','Etude environnementale',
+  'Etude et réalisation de tous travaux de terrassement , de génie civil et du bâtiment',
+  'Etude et réalisation des travaux en Télécommunications',
+  'Etudes, contrôle et Suivi des Travaux de BTP','Etudes et conseils en gestion',
+  'Etudes, recherches et formation en finances publiques','Etudes statistiques',
+  'Etudes techniques économiques,sociales et environnementales des routes',
+  'Etudes, appui, Conseils aux entreprises','Evènementiel',
+  'Exercice de la profession d\'expert comptable',
+  'Exercice de toutes activités et de toutes prestations de services en Informatique',
+  'Exercice de toutes prestations de services liées au secteur des technologies informatiques et de la communication',
+  'Expertise en micro finance, finance et management','Expertise maritime',
+  'Expertises et analyses chimiques','Exploitation agricole','Exploitation avicole',
+  'Exploitation de bureaux d\'achat','Exploitation de débit de boissons',
+  'Exploitation de radiodiffusion sonore commerciale','Exploitation de salles de jeux',
+  'Exploitation d\'infrastructures de transport','Exploitation d\'un cafétariat',
+  'Exploitation d\'un cyber centre',
+  'Exploitation d\'un réseau de téléphone cellulaire GSM installé au Bénin',
+  'Exploitation d\'un restaurant','exploitation d\'une garderie et crêche',
+  'Exploitation d\'une mini-sation','Exploitation d\'une officine de pharmacie',
+  'Exploitation d\'une unité d\'entretien','Exploitation d\'une usine de fabrication',
+  'Exploitation et gérance d\'hôtels','Exploitation et gestion agricole',
+  'Exploitation forestière','Exploitation, extraction et commercialisation de sable lagunaire et carrières',
+  'Exportation de produits forestiers, de produits vivriers, céréales',
+  'Extraction d\'autres minerais métalliques','Extraction de bauxite',
+  'Extraction de charbon et de lignite, extraction de tourbe',
+  'Extraction de diamants et d\'autres pierres précieuses',
+  'Extraction de minerais de cuivre','Extraction de minerais de fer',
+  'Extraction de minerais de manganèse','Extraction de minerais de métaux non ferreux',
+  'Extraction de minerais de métaux précieux','Extraction de minerais d\'uranium',
+  'Extraction de minerais métalliques','Extraction de pétrole brut et de gaz naturel, activités annexes',
+  'Extraction de phosphates et de sels de potassium,naturels',
+  'Extraction de pierres, de sables et d\'argiles','Contrôle technique BTP',
+  'Extraction d\'engrais naturels et de minéraux pour l\'industrie chimique',
+  'Extraction ou production de sel et de natron',
+  'Extractions de minéraux pour l\'industrie chimique','Fabrication d\'appareils domestiques',
+  'Fabrication d\'articles de maroquinerie locaux',
+  'Fabrication d\'articles de voyage et de maroquinerie, d\'articles de sellerie et de bourrellerie',
+  'Fabrication d\'articles d\'habillement, préparation et teinture des fourrures',
+  'Fabrication d\'articles divers en bois ou en liège',
+  'Fabrication d\'articles en bois ou de vannerie',
+  'Fabrication d\'articles en bois, liège, vannerie et sparterie',
+  'Fabrication d\'articles en cuir','Fabrication d\'articles en papier ou en carton',
+  'Fabrication d\'autres articles textiles','Fabrication d\'autres matériels de transport',
+  'Fabrication d\'autres ouvrages en caoutchouc','Fabrication d\'autres ouvrages en métaux',
+  'Fabrication d\'autres produits céramiques','Fabrication d\'autres produits chimiques',
+  'Fabrication d\'autres produits chimiques de base','Fabrication de boissons',
+  'Fabrication de boissons alcoolisées','Fabrication de bougies ou d\'allumettes',
+  'Fabrication de briques','Fabrication de carreaux en céramique',
+  'Fabrication de carton ondulé et d\'emballages en papier ou en carton',
+  'Fabrication de charbon de bois','Fabrication de chaussures',
+  'Fabrication de ciment, chaux et plâtre',
+  'Fabrication de ciment, de matériaux et d\'ouvrages en béton ou en pierre et d\'autres produits minéraux métalliques',
+  'Fabrication de condiments et assaisonnements','Fabrication de corps gras',
+  'Fabrication de feuilles de placage, de contreplaqués et de panneaux',
+  'Fabrication de fibres synthétiques ou artificielles',
+  'Fabrication de machines de bureau et de matériel informatique',
+  'Fabrication de machines d\'usage général','Fabrication de machines d\'usage spécifique',
+  'Fabrication de machines et de matériels','Fabrication de machines et de matériels électriques',
+  'Fabrication de matelas et de meubles','Fabrication de matelas et sommiers',
+  'Fabrication de matelas mousse et ressort',
+  'Fabrication de matériaux de construction, de brique de tuiles, de carreaux',
+  'Fabrication de matériaux et d\'ouvrages en ciment, en béton ou en plâtre, travail de la pierre',
+  'Fabrication de médicaments traditionnels','Fabrication de meubles',
+  'Fabrication de meubles, activités de fabrication',
+  'Fabrication de pain et de pâtisseries fraîches',
+  'Fabrication de papier, de carton et d\'articles en papier ou en carton',
+  'Fabrication de parfums et de produits de toilette',
+  'Fabrication de pâte à papier, de papier et de carton',
+  'Fabrication de pâtes alimentaires, de couscous et de produits farineux similaires',
+  'Fabrication de peintures et vernis, adjuvants et encres d\'imprimerie',
+  'Fabrication de pneumatiques et de chambres à air,rechapage',
+  'Fabrication de portes métalliques','Fabrication de produits à base de tabac',
+  'Fabrication de produits agrochimiques',
+  'Fabrication de produits agrochimiques, de peintures et d\'autres produits chimiques',
+  'Fabrication de produits alimentaires à base de céréales',
+  'Fabrication de produits alimentaires divers',
+  'Fabrication de produits azotés et d\'engrais',
+  'Fabrication de produits en caoutchouc ou en matières plastiques',
+  'Fabrication de produits laitiers et de glaces',
+  'Fabrication de produits minéraux non métalliques','Fabrication de produits pharmaceutiques',
+  'Fabrication de protheses dentaires','Fabrication de savons, détergents et produits d\'entretien',
+  'Fabrication de sucre','Fabrication de tapis et carpettes','Fabrication de textiles',
+  'Fabrication de tuiles et briques en terre','Fabrication de verre et d\'articles en verre',
+  'Fabrication de verre, poteries et matériaux pour la construction',
+  'Fabrication d\'équipements et appareils de radio,télévision et communication',
+  'Fabrication des médicaments génériques','Fabrication des produits amylacés',
+  'Fabrication d\'étoffes et d\'articles de bonneterie',
+  'Fabrication d\'huile de maïs et autres produits amylacés',
+  'Fabrication d\'instruments de musique',
+  'Fabrication d\'instruments médicaux, de précision,d\'optique et d\'horlogerie',
+  'Fabrication d\'ouvrages de charpenterie et de menuiserie, fabrication d\'emballages en bois',
+  'Fabrication d\'ouvrages en métaux, travail des métaux',
+  'Fabrication et vente de farines naturelles de croissance',
+  'Fabrication et vente de jus d\'ananas','Fabrication et vente de miel',
+  'fabrication mécanique','Fabrication, distribution et vente de barres de glaces',
+  'Facilitation commerciale','Filature, tissage et ennoblissement textile','Fonderie',
+  'Forage','Formation en anglais','Formation en diverses langues',
+  'Formation en Informatique','Formation en management','Formation professionnelle',
+  'Formation, orientation et suivi de carrière des footballeurs',
+  'Fournisseurs d\'accès à Internet',
+  'Fourniture d\'accès aux réseaux de télécommunication',
+  'Fourniture de services et solutions intégrées, en informatique et autres technologies de l\'information et de la communication',
+  'Fournitures de matériels et consommables médicaux','Froid et Climatisation',
+  'Garage automobile, réparation de véhicule',
+  'Gardiennage, surveillance, sécurisation des personnes, des biens et services',
+  'Génie civil','Génie électrique','Gestion de projets en énergies renouvelables',
+  'Gestion des Ressources Humaines','Gestion documentaire',
+  'Gestion et exploitation de boîte de nuit',
+  'Gestion et administration des hôpitaux et services de santé','Gestion immobilière',
+  'Gynécologie, obstétrique, échographie','Hébergement','Horticulture, pépinières',
+  'Hôtellerie','Immobilier, locations et services aux entreprises','Importation de bijoux',
+  'Importation de denrées alimentaires','Importation de fournitures de bureau',
+  'Importation de friperie','Importation de fruits et légumes frais',
+  'Importation de la génétique animale, produits de nutrition animale',
+  'Importation de matériaux de construction','Importation de matériels de pressing',
+  'Importation de produits pharmaceutiques et appareils médicaux',
+  'Importation de produits tropicaux et autres produits agricoles',
+  'Importation de Textiles','Importation de véhicules d\'occasion',
+  'Importation des effets vestimentaires',
+  'Importation des engrais liquides organiques,suppléménts alimentaires',
+  'Importation d\'ustensiles de cuisine et appareils électroménagers',
+  'Importation et exportation de farine de blé',
+  'Importation et exportation de matériels d’étanchéités',
+  'Importation et exportation de produits vivriers',
+  'Importation et fourniture d\'équipements industriels, d\'engins lourds',
+  'Importation et vente des matériels électriques',
+  'Importation et exportation de tous produits alimentaires,agricoles et agropastoraux',
+  'Importation et vente d\'accessoire de couture et mercerie',
+  'Importation et vente de casques homologués',
+  'Importation et vente des produits cosmétiques et parfumerie',
+  'Importation, commercialisation et vente des produits et denrées alimentaires,de textiles,',
+  'Importations de matériels de télécommunication et accessoires',
+  'Importations de matériels électriques','Importations de matériels frigorifiques',
+  'Importations de pièces détachées, de pneus et accessoires automobiles',
+  'Imprimerie','Industrie pharmaceutique','Industries alimentaires',
+  'Ingénierie électrique','Ingénierie géologique','Ingénierie informatique',
+  'Installation de feux tricolore, éclairage public',
+  'Installation d\'usine pour la fabrication des produits divers',
+  'Intégrateurs','Intermédiation financière',
+  'Intermédiation financière non monétaire','Intermédiation monétaire','Interprétariat',
+  'Laboratoire d\'analyse biomédicale','Lavage auto moto',
+  'Lavage et nettoyage de textiles','Location d\'articles personnels et domestiques',
+  'Location d\'autres matériels de transport','Location de bâches','Location de chaises',
+  'Location de machines et équipements',
+  'Location de matériel de construction avec opérateur',
+  'Location de matériels de transport','Location de salle de manifestations',
+  'Location de véhicules, transport et activités connexes','Location de voitures',
+  'Location des engins lourds','Location immobilière',
+  'Maintenance de matériels informatiques et d\'équipements de bureau',
+  'Maintenance industrielle','Maintenance informatiques et réseau','Manutention',
+  'Manutention et entreposage','Maraîchage','Maroquinerie','Mécanique générale',
+  'Mécanique Moto','Mécanique, automobile, électricité','Mécanographie',
+  'Médécine générale','Médecine traditionnelle et pharmacopée','Meneurie',
+  'Menuiserie générale','Métallurgie, fonderie','Microfinance',
+  'Mise en sachet et vente d\'eau','Motel','Murissage',
+  'Négoce et distribution d\'équipement électriques, informatiques industriels et télécommunications',
+  'Négoce et représentation commerciale','Négoce international','Nettoyage industriel',
+  'Nutrition diététique','Opérateurs mobiles','Organisation du transport de fret',
+  'Parallélisme, équilibrage de roues','Pâtisserie et boulangerie','Pêche artisanale',
+  'Pêche industrielle','Pêche, pisciculture, aquaculture','Peinture',
+  'Peinture automobile et tôlerie','Perlage de bijoux','Pesage','Photographie',
+  'Plomberie générale','Postes et télécommunications','Poterie',
+  'Presse écrite et audiovisuelle','Pressing','Prestation et animation musicale',
+  'Prestations de service en électrotechnique','Prestations de services en Communication',
+  'Prestations de services en électricité','Prestations de services en électronique',
+  'Prestations de services en entretien','Prestations de services informatiques',
+  'Prestations de services liés à l\'activité de voyage',
+  'Prestations de services numériques','Prestations d\'hôtesses',
+  'Prestations radiologiques et échographiques','Production agricole',
+  'Production agroalimentaire','Production animale','Production audio et édition musicale',
+  'Production audiovisuelle','Production de biens de consommation',
+  'Production de café marchand','Production de films',
+  'Production de gaz, distribution par conduite de combustibles gazeux','Production de riz',
+  'Production de semence','Production de soja',
+  'Production d\'eaux de table et fabrication de boissons non alcoolisées',
+  'Production des oeufs de table',
+  'Production et commercialisation de granulés secs et dérivés de noix de palme',
+  'Production et distribution d\'électricité',
+  'Production et vente de produits cosmétiques','Production et vente de savons',
+  'Production et vente d\'eau potable (Pure water)',
+  'Production et vente des jus de fruits','Production vidéo : cinéma et télévision',
+  'Production, distribution et vente de ciment','Promotion de la culture',
+  'Promotion de produits pharmaceutiques',
+  'Promotion et vulgarisation de sites touristiques','Promotion immobilière',
+  'Protection incendie et sécurité','Provenderie','Publicité','Quincaillerie générale',
+  'Raffinage pétrolier','Raffinage pétrolier, cokéfaction, industries nucléaires',
+  'Réalisation d\'études pluridisciplinaires (plan d\'affaires, étude marketing, étude socio-économique et autres)',
+  'Rebobinage','Recherche et développement',
+  'Recherche et développement expérimental en sciences physiques et naturelles et en ingénierie',
+  'Recherche et développement expérimental en sciences sociales et humaines',
+  'Recherche et exploitation minière','Recouvrement de créances','Recrutement, intérim',
+  'Rectification des vibrequins, tambours, disques','Rédaction de plan d\'affaires',
+  'Réparation d\'appareils de mesure','Réparation d\'articles personnels et domestiques',
+  'Réparation de matériels électroniques et informatiques','Réparation de motocycles',
+  'Reportage photo vidéo','Représentation commerciale de Société Mère',
+  'Reproduction d\'enregistrements','Reprographie','Restauration',
+  'Sciage et rabotage du bois','Scierie','Séchage, salage ou fumage du poisson',
+  'Sécurisation des installations pétrolières','Sécurité et Incendie',
+  'Sécurité sociale obligatoire','Sérigraphie','Serrurerie','Services traiteur',
+  'Services bureautiques','Services de livraison','Services dépannage',
+  'Services fournis principalement aux entreprises','Services funéraires','Shipping',
+  'Sidérurgie et première transformation de l\'acier',
+  'Site internet, équipements de matériels informatiques','Soudure','Stylisme',
+  'Sylviculture, exploitation forestière, activités annexes','Tapisserie moderne',
+  'Teinturie','Télécentre, cybercafé','Télécommunications','Télétravail','Tourisme',
+  'Tournage, ajustage',
+  'Toutes activités d\'agent général des assurances et d\'agent commissionnaire en Assurance',
+  'Toutes activités de micro finance notamment les opérations de crédits, de mobilisation de l\'épargne',
+  'Toutes activités de rénovation, de construction de bâtiments et travaux publics, BTP, génie civil, exécution d\'ouvrages d\'arts',
+  'Toutes activités industrielles et commerciales liées à la conception',
+  'Toutes activtés relatives à l\'agence générale et au courtage en matière d\'assurance et de réassurance',
+  'Toutes opérations de logistique','Toutes opérations de transit',
+  'Toutes opérations de transport terrestre maritime et aérien','Trading',
+  'Traitement de données, hébergement et activités connexes',
+  'Transactions portuaires','Transfert d\'argent','Transfert d\'argent via réseaux mobiles',
+  'Transformation agroalimentaire','Transformation de bois',
+  'Transformation de produits alimentaires','Transformation de produits locaux',
+  'Transformation des produits agricoles','Transformation du café, du thé',
+  'Transformation et conservation de fruits et légumes',
+  'Transformation et conservation des poissons, crustacés et mollusques','Transit',
+  'Transport et logistique','Transports aériens','Transports ferroviaires',
+  'Transports maritimes et côtiers','Transports par voies navigables',
+  'Transports routiers de marchandises','Transports routiers de passagers',
+  'Transports terrestres','Travaux topographiques','VENTE DE VERRES MÉDICAUX',
+  'Vente d\'aquarium','Vente de bétails','Vente de Boissons','Vente de ciment',
+  'Vente de ferrailles','Vente de machines agricoles','Vente de manuels scolaires',
+  'VENTE DE MATÉRIELS D\'ASCENSEURS','Vente de Poulets fermiers',
+  'Vente de produits agroalimentaires','Vente d\'épices',
+  'Vente d\'équipements médicaux et réactifs','Vente des produits spirituels',
+  'Vente d\'objets d\'art','Vente et entretien de chiots',
+  'Vente et maintenance des appareils électroniques',
+  'Vente et réparation de matériels informatiques et électriques',
+  'Vente et stockage de graviers','Vitrerie','Vulcanisation','???',
+  'Toutes activités liées aux bâtiments et travaux publics (BTP)',
+  'Achat et vente de matériels informatiques bureautique','Froid',
+  'Achat et vente de produits cosmétiques',
+  'Achat et vente de fournitures de bureau librairie et papeterie','Production',
+  'Transfert d\'argent par réseaux mobiles',
+  'Achat et vente de produits alimentaires et des boissons','Toutes prestations',
+  'Menuiserie','Achat et vente de diverses marchandises','Conseils','Exploitation',
+  'Achat et ventes de portables et accessoires de télécommunication',
+  'Bâtiments et travaux publics-Assainissement',
+  'Achat et vente de matériaux de construction',
+  'Achat et vente de tissus WAX hollandais','Alimentation générale',
+  'Achat et vente de vêtements-Prêt-à-porter','Maintenance informatique et réseau',
+  'Achat et vente de matériels d\'électricité','Toutes activités',
+  'Achat et vente de gravillons, sable Gestion de carrière','Bureautique',
+  'Achat et vente d\'ustensiles de cuisine et d\'appareils électroménagers',
+  'Location d\'articles personnels et domestiques n.c.a.','Achat et vente de textiles',
+  'Transports','Etude','Garage automobile-Réparation de véhicule','Restaurants',
+  'Service traiteur','Production audio visuelle',
+  'Achat et vente de vêtements et accessoires pour enfants et adolescents',
+  'Pisciculture, aquaculture','Activités de nettoyage',
+  'Achat et vente de cartes de recharge',
+  'Achat et vente de produits tropicaux et autres produits agricoles',
+  'le commerce général',
+  'Achat et vente de pièces détachées, de pneus et accessoires automobiles',
+  'Coiffure','Achat et vente','Mécanique-automobile-Electricité',
+  'Hôtels et autres moyens d\'hébergement de courte durée','Construction de bâtiments',
+  'Bureau de change manuel de devises','Achat et vente de vêtements',
+  'Achat et vente des produits tropicaux',
+  'Achat et ventes de meubles et biens d\'équipement',
+  'Activités de formation permanente et autres','Activités de presse et édition',
+  'Autres activités informatiques','Achat et vente de produits congelés chambres froides',
+  'Commerce de gros de combustibles solides,liquides et gazeux et de produits dérivés',
+  'Achat et vente de matériaux de construction quincaillerie, peinture et articles',
+  'Élevage d\'animaux n.c.a.',
+  'Achat et vente de produits forestiers et de produits vivriers et de céréales',
+  'Bars, cafés et autres débits de boissons',
+  'Gérant Mini station/Station trottoir','Travaux d\'installation',
+  'Autres activités de spectacle',
+  'Assistance aux entreprises/Gestion des ressources humaines/Entretien de recrutement /Formation personnelle',
+  'Achat et vente de boissons gazeuses et boissons sucrées',
+  'Transports urbains de passagers',
+  'Achat et vente de combustibles solides, liquides, gazeuses et de produits dérivés',
+  'Soins médicaux et spécialités',
+  'Achat et vente de jouets, articles de décoration et articles pour cadeaux',
+  'Activités cinématographiques et vidéo',
+  'Exploitation d\'un réseau de téléphonie cellulaire GSM installé au Bénin',
+  'Commerce de gros d\'autres matériaux de construction, quincaillerie et fournitures pour plomberie',
+  'Activités de fabrication diverses','Presse écrite et audio-visuelle',
+  'Achat et vente de pierres précieuses Or-Diamant','Télécommunication',
+  'centre d\'affaires',
+  'l\'exercice de toutes prestations de services liées au secteur des technologies informatiques et de la communication',
+  'Etudes ,Contrôle et Suivi des Travaux de BTP','Couture et Mercerie',
+  'Achat et vente de pièces détachées industrielles','achat et vente de gaz domestiques',
+  'Etudes,Appui,Conseils aux entreprises','Styliste',
+  'Site d\'internet,équipements de matériels informatiques',
+  'La conception et la réalisation de logiciels,les études informatiques',
+  'Importation de matériels informatiques, bureautiques',
+  'Parallélisme-Equilibrage de roues','Organisation de foires',
+  'Usine de transformation de bois',
+  'Activités d\'architecture et d\'ingénierie, conseil technique',
+  'Fabrication et vente de portions de glace',
+  'La promotion et la vulgarisation des sites touristiques',
+  'L\'étude et la réalisation de tous travaux de terrassement , de génie civil et du bâtiment;',
+  'Le Gardiennage, la surveillance, la sécurisation des personnes, des biens et services',
+  'Le courtage d\'assurances et de réassurances au BENIN','Toutes opérations',
+  'Conception et réalisation de décor',
+  'Fabrication-distribution et vente de barres de glaces',
+  'Toutes activités pouvant concerner directement ou indirectement la consultation de divers services',
+  'l\'achat et vente de tous matériels',
+  'l\'étude des marchés publics et privés et leur faisabilité,le consulting,',
+  'Travaux d\'entretien de ménages, de Bureaux, d\'espaces publiques',
+  'Prépayement factures d\'électricité -Eau-Téléphone',
+  'La prestation de services en tous genres','L\'agriculture',
+  'L\'approvisionnement en intrants agricoles et en produits phytosanitaires de toutes cultures',
+  'Communications-Informations-Réalisation et édition de magazines traduction-Interprétariat',
+  'Activités juridiques',
+  'La construction de bâtiments, les travaux publics et le génie civil',
+  'La création,l\'installation,la gestion et l\'administration de complexes hôteliers,de restauration,de bars , de boîtes de nuit,de centre de distraction',
+  'Activités sportives ou récréatives n.c.a.','Achat et vente de clés',
+  'Fabrication de produits en matières plastiques',
+  'La fabrication de matériaux de construction, de brique de tuiles, de carreaux etc',
+  'Importation de produits alimentaires et de boissons',
+  'toutes activités de rénovation, de construction de bâtiments et travaux publics,le BTP,le génie civil,l\'exécution d\'ouvrages d\'arts,',
+  'L\'exercice de toutes activités et de toutes prestations de services en Informatique',
+  'Toutes activités liées à l\'installation d\'usines de transformations des produits vivriers',
+  'L\'Exploitation d\'une unité d\'entretien',
+  'le négoce et la distribution d\'équipement électriques,informatiques industriels et de télécommunications',
+  'Exportations de produits forestiers, de produits vivriers, céréales',
+  'Culture et élevage associés',
+  'Fabrication de matériaux et d\'ouvrages en ciment,en béton ou en plâtre, travail de la pierre',
+  'Achat et vente d\'effets vestimentaires','L\'agence générale d\'assurances.',
+  'Achat et vente de matériels plastiques','Super Marché et Boucherie',
+  'Energie et systèmes énergétiques,Ingénierie,hygiène sécurité et environnement',
+  'Achat et vente d\'équipements GSM',
+  'Conception,développement et exploitation de plates formes de transaction à distance',
+  'Rectification des vibrequins,tambours,disques',
+  'L\'évenementiel (congrès et consulting)',
+  'Le conseil juridique et fiscal aux entreprises et aux sociétés',
+  'Réalisation d\'études pluridisciplinaires (plan d\'affaires;étude marketing;étude socio-économique et autres)',
+  'Etudes de recherche formation en Finances publiques',
+  'Toutes activités pouvant concerner directement ou indirectement',
+  'L\'entreprise générale de production et de diffusion audiovisuelle',
+  'Commerce de détail en magasin spécialisé de livres, journaux et articles de papeterie',
+  'Auto-école/Enseigenement de conduite automobile',
+  'La conception,l\'étude et la réalisation de tous travaux publics et privés,de bâtiment,de génie civil,',
+  'Transports interurbains de passagers','Commerce de motocycles et accessoires',
+  'La société a pour objet','Agence immobilière',
+  'Exposition des créations vestimentaires JB-HOUNYOVI',
+  'Achat et vente des produits d\'entretien',
+  'Achat et vente d\'aliments destinés à la volaille et au bétail','Élevage de porcins',
+  'Tournage-ajustage','Achat et vente des produits de la loterie','Bureau de change manuel',
+  'La location de véhicules,le transport et les activités connexes','Tous travaux',
+  'Fourniture de services et solutions intégrées,en informatique et autre technologie de l\'information et de la communication',
+  'Gynécologie-Obstétrique-Echographie,',
+  'La commercialisation, l\'industrialisation et l\'exportation des produits forestiers et tropicaux en occurrence l\'acajou et karité',
+  'Toutes activités d\'agent général des assurances et d\'agent commissionnaireen Assurance;',
+  'La commercialisation de centrales photovoltaiques ou tous produits,matériels liées aux énergies renouvelables',
+  'Expertise','Vulcanisateur',
+  'Eploitation d\'un réseau de téléphone cellulaire GSM installé au Bénin',
+  'Activités d\'intermédiaires du commerce de gros',
+  'L\'exécution des études d\'avant-projet','Soins de beauté',
+  'Location de machines et équipements n.c.a.',
+  'Activités d\'autres organisations associatives n.c.a.',
+  'Congélation de poissons, crustacés et mollusques','Peintre bâtiment',
+  'Achat et vente de produits de beauté',
+  'L\'étude et la réalisation des travaux en Télécommunication','Recrutement-Intérim',
+  'Teinturière','Culture de légumes','Travaux de finition',
+  'Autres intermédiations financières',
+  'Commerce de gros de machines, d\'équipements et fournitures électriques',
+  'Activités pour la santé humaine n.c.a.',
+  'L\'exercice de la profession d\'expert comptable','Autres cultures n.c.a.',
+  'La production de films','Achat et vente de pièces détachées','Promotion',
+  'Achat et vente de consommables GSM',
+  'Commerce de détail en magasin spécialisé de matériels de bureau, d\'ordinateurs, d\'articles optiques et photographiques et de matériels de télécommunication',
+  'Assurance-dommages','l\'achat et la distribution de produits brassicols',
+  'Autres activités de services personnels','Achat et vente de gaz domestique',
+  'Édition d\'enregistrements sonores','Garde de véhicules à 02 et 04 roues',
+  'La fabrication de matelas Mousse et Ressort','Préparation des sites',
+  'Production et vente de savons parfumés','Coordonnier','Cardiologie',
+  'La production et vente de tous objets',
+  'Commerce de pièces et d\'accessoires automobiles',
+  'Autres activités de services fournis principalement aux entreprises n.c.a.',
+  'Elevage de petits ruminants',
+  'Achat et vente d\'accessoires de femmes et de maisons','Dépôt de boissons',
+  'Travail des grains, fabrication d\'aliments pour animaux','Achat et Vente de',
+  'Tout travaux de perles en collier',
+  'Le Courtage, le transport public de personnes et de marchandises, l\'entretien',
+  'Dépôt local de boissons',
+  'Travaux d\'entretien de ménages,de bureaux,d\'espaces publiques',
+  'Tous travaux de tapisserie moderne','Le consulting','Elevage de porcs',
+  'Formation,orientation et suivi de carrière des footballeurs',
+  'Installation de feux tricolore-éclairage public','Intermédiations',
+  'Distribution,vente,location de bâches et chaises','Tradi-thérapie',
+  'Achat et vente de chaussures plastiques','Céregraphie','Audit','Formation',
+  'Vente de semence','Vente de sable et gravier','Exploitation d\'une cafétariat',
+  'Achat et vente de meubles','Achat et vente des équipements d\'entretien','Bar',
+  'Production du Pain','Organisation de séances de Lecture',
+  'Achat et vente matériels,mobiliers et équipements de bureau',
+  'Achat et vente d\'emballages paniers',
+  'Etudes et recherches formation en Finances publiques',
+  'Achat et vente de pièces mécaniques','Touts prestations','Ingénieurie',
+  'Pratique médicale et/ou dentaire','Sylviculture','Fabrication','Location','Dessin',
+  'Activités','Activités d\'auxiliaires financiers',
+  'Achat et vente de téléphones accessoires','Forge','Vente d\'eau en sachet',
+  'Fabrication d\'articles de vannerie ou de sparterie','Transports par conduites',
+  'Achat et vente de motos','Achat et vente d\'huile','Achat et vente de savons',
+  'Commerce de détail en magasin spécialisé d\'articles et appareils d\'équipement domestique',
+  'L\'installation d\'usine pour la fabrication des produits divers','Offrir des services',
+  'Autres commerces de gros','La recherche et l\'exploitation minière',
+  'Vente d\'eau glacée en sachet recyclable',
+  'Commerce de détail en magasin non spécialisé','Activités forestières',
+  'Fabrication d\'autres articles textiles n.c.a.','Achat et vente de farine de maïs',
+  'Librairie','Achat et vente de chiens',
+  'Achat et vente d\'articles et accessoires de coiffure',
+  'Achat et vente de machines agricoles','Bar-Maquis','Presse écrite et en ligne',
+  'Achat et vente de carreaux','Culture d\'autres fruits','Vente de peintures',
+  'Achat et vente de produits d\'aluminium et de vitrerie','Achat et vente de rideaux',
+  'Achat et vente de matériels de transport','Achat et vente de papeterie',
+  'La vente en ligne','Achat et vente de draps de lit',
+  'Achat et vente de matériels agricoles',
+  'Achat et vente de matériels de dragage de sable','Vente des produits d\'élevage',
+  'L\'inspection','Vente d\'aliments pour animaux','Achat et vente d\'huile rouge',
+  'Achat et vente de produits pharmaceutiques','Achat et vente de pneus',
+  'Achat et vente d\'essences désodorisantes','Achat et vente d\'huile de palme',
+  'Charcuterie','Achat et vente de vitres','Achat et vente de céréales',
+  'Achat et vente de batteries','Achat et vente de matériels de forage',
+  'Cuisinier','Vente d\'objets d\'art.','la microfinance,la création',
+  'L\'importation et l\'exportation',
+  'Toutes opérations généralement quelconques pouvant concerner directement ou indirectement',
+  'l\'importation et l\'exportation de tous produits alimentaires,agricoles et agropastoraux',
+  'importation de matières premières pour la production d\'eau minérale',
+  'Importation de produits de pétroles, hydrocarbures et dérivés pétrole',
+  'l\'importation,la commercialisation et la vente des produits et denrées alimentaires,de textiles, de pattes alimentaires',
+  'L\'égrenage du coton-graine','Importation de meubles et biens d\'équipements',
+  'La prise de participation au capital d\'autres sociétés commerciales',
+  'La consignation maritime','Représentation Commerciale de la Société Mère',
+  'Toutes prestations pouvant concerner l\'achat, la vente,l\'échange,le négoce,l\'importation,l\'exportation',
+  'l\'achat ,la vente,l\'importation et l\'exportation de véhicules automobiles neufs ou d\'occasion',
+  'Importation de pneus ou usagers','toutes opérations de banque',
+  'Importation de motocycles et accessoires',
+  'Toutes activités liées à l\'importation, l\'exportation',
+  'Exploitation d\'infrastructures de transport terrestre',
+  'Aller au secours financier à tout salarié du secteur public ou privé',
+  'Micro finance','Importation de produits congelés et accessoire de chambres froides',
+  'L\'importation et la fourniture d\'équipements industriels, d\'engins lourds',
+  'Importation de produits naturels','Le Groupement a pour objet',
+  'L\'écoute médicale 24 heures sur 24 heures',
+  'L\'Authentificaion, la Certification et la Protection internationale de documents',
+  'L\'activité d\'agent maritime de l\'armement G.S.L/ZIM ou d\'un armateur ligne membre du groupe G.S.L/ZIM',
+  'La domiciliation de toutes sociétés,établissements,le recouvrement de créances,le conseil aux',
+  'Importation et exportation de la farine de blé',
+  'Importation de produits agroalimentaires',
+  'Importation de la génétique animale,produits de nutrition animale',
+  'La consignation maritime,la création et la gestion d\'agences maritimes,toutes opérations de manutention',
+  'Commerce de gros de bois','La production, la distribution et la vente de ciment',
+  'la gestion et l\'administration des hôpitaux et services de santé',
+  'Apport d\'appui en matière de gestion aux bureaux de liaison de l\'Afrique centrale et Occidentale',
+  'Importation de matériels d\'imprimerie',
+  'Apporter son concours financier à la promotion et à l\'amélioration de l\'habitat au Bénin',
+  'Les industries alimentaires','L\'exercice de la profession d\'assureur',
+  'La société a pour objet, commerce et réparation de consommables informatiques, de bureautique et autres',
+  'La propriété par voie d\'apport','L\'exploitation d\'une usine de fabrication',
+  'La classification','La gestion de Construction du GAZODUC Ouest Africain',
+  'Les services financiers de proximité par l\'octroi de crédit et la collecte de l\'épargne répondant aux besoins des petites et moyennes entreprises et industries béninoises',
+  'Importation de panneaux solaires et accessoires',
+  'Toutes activités de micro finance notamment les opérations de crédits,de mobilisation de l\'épargne',
+  'Extraction de pétrole brut et de gaz naturel',
+  'L\'importation et la vente des matériels électriques',
+  'La fourniture de tout conseil,sous toutes ses formes, aux administrations, aux associations,aux entreprises,aux banques',
+  'les activités de production,d\'égrennage et de contrôle de coton',
+  'Fabrication d\'autres ouvrages en métaux, travaildes métaux',
+  'Prise de participation sous quelque forme que soit dans les entreprises',
+  'Métallurgie et première transformation des métaux précieux et des métaux non ferreux',
+  'Fabrication d\'autres équipements de transport',
+  'La production de biens de consommation',
+  'Importation de matériels de pressing et de Mercerie',
+  'Conseil en transformation numérique, SSII','L\'exploitation de bureaux d\'achat',
+  'Fabrication d\'appareils domestiques n.c.a.',
+  'Commerce de gros de produits alimentaires,boissons et tabacs manufacturés'
+];
+
+function autocomplete(inputId, listId, items) {
+  const inp = $(inputId);
+  const list = $(listId);
+  if (!inp || !list) return;
+  const show = () => {
+    const q = inp.value.toLocaleLowerCase('fr');
+    list.innerHTML = items.filter(x => !q || x.toLocaleLowerCase('fr').includes(q)).slice(0, 40).map(x => `<div>${esc(x)}</div>`).join('');
+    list.classList.toggle('show', !!list.innerHTML);
+  };
+  inp.addEventListener('input', show);
+  inp.addEventListener('focus', show);
+  inp.addEventListener('blur', () => setTimeout(() => list.classList.remove('show'), 150));
+  list.addEventListener('mousedown', e => {
+    if (e.target.tagName === 'DIV') {
+      inp.value = e.target.textContent;
+      list.classList.remove('show');
+      inp.dispatchEvent(new Event('input'));
+    }
+  });
+}
+autocomplete('commune', 'communeList', communes);
+autocomplete('profession', 'professionList', professions);
+autocomplete('nationalite', 'nationaliteList', nationalites);
+
+(function() {
+  const inp = $('objet');
+  const list = document.createElement('div');
+  list.className = 'suggest';
+  list.id = 'objetList';
+  inp.parentNode.appendChild(list);
+  const show = () => {
+    const lines = inp.value.split('\n');
+    const lastLine = lines[lines.length - 1] || '';
+    const q = lastLine.toLocaleLowerCase('fr');
+    list.innerHTML = activites.filter(x => !q || x.toLocaleLowerCase('fr').includes(q)).slice(0, 40).map(x => `<div>${esc(x)}</div>`).join('');
+    list.classList.toggle('show', !!list.innerHTML);
+  };
+  inp.addEventListener('input', show);
+  inp.addEventListener('focus', show);
+  inp.addEventListener('blur', () => setTimeout(() => list.classList.remove('show'), 150));
+  list.addEventListener('mousedown', e => {
+    if (e.target.tagName === 'DIV') {
+      const lines = inp.value.split('\n');
+      lines[lines.length - 1] = e.target.textContent;
+      inp.value = lines.join('\n');
+      list.classList.remove('show');
+      inp.dispatchEvent(new Event('input'));
+    }
+  });
+})();
+
+// ===================== INITIALISATION =====================
+function init() {
+  const today = new Date().toISOString().slice(0, 10);
+  $('dateActe').value = today;
+  addSubscriber();
+  updateTotals();
+  showScreen('login');
+  setTimeout(() => {
+    const loader = $('appLoader');
+    if (loader) {
+      loader.classList.add('hide');
+      setTimeout(() => loader.remove(), 500);
+    }
+  }, 700);
+}
+
+init();
+</script>
+</body>
+</html>
